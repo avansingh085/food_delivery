@@ -15,10 +15,10 @@ const HamburgerMenu = ({isMenuOpen,setIsMenuOpen}) => {
   };
 
   return (
-    <div className="fixed z-20 h-screen  ">
+    <div className="fixed z-20 min-h-screen  ">
      
       <div
-        className={`absolute top-0 left-0    h-screen bg-gray-800 bg-opacity-75 flex justify-center items-center transition-all duration-1000 ${
+        className={`absolute top-0 left-0   min-h-screen bg-gray-800 bg-opacity-75 flex justify-center items-center transition-all duration-1000 ${
           isMenuOpen ? 'w-52 opacity-100 ' : 'w-0 opacity-0'
         }`}
       >

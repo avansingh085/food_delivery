@@ -8,7 +8,7 @@ function App() {
   const [error, setError] = useState(null);
    const detect_loca=async ()=>{
     setDetectClcik(true);
-    setLocation(null)
+    setLocation(null);
     navigator.geolocation.getCurrentPosition(
     
     (position) => {
@@ -39,7 +39,7 @@ function App() {
  
 
   return (
-    <div className=" h-20 bg-slate-800 flex items-center justify-center mt-20">
+    <div className=" h-20 bg-slate-800 flex items-center justify-center mt-30">
     
        
         {error && (
@@ -47,7 +47,7 @@ function App() {
             {error}
           </div>
         )}
-      <button className="h-16 w-96 text-slate-700 shadow-xl rounded-sm bg-white float-right" onClick={detect_loca}>  { detect_click ? (location ? (
+      <button className="h-16 w-fit text-slate-700 shadow-xl rounded-sm bg-white float-right" onClick={detect_loca}>  { detect_click ? (location ? (
           <div className="space-y-2 flex">
             <p className="text-lg font-medium text-gray-700">
               <strong>City: </strong> {location.city || "Not Available"}
