@@ -39,7 +39,7 @@ function App() {
  
 
   return (
-    <div className=" h-20 bg-slate-800 flex items-center justify-center mt-32">
+    <div className=" h-20 bg-slate-800 flex md:items-center md:justify-center mt-40">
     
        
         {error && (
