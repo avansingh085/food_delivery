@@ -69,7 +69,7 @@ const FoodMenu = () => {
       {categories.map((category) => (
         <div key={category.name} className="mb-10">
           <h2 className="text-2xl font-bold mb-4 text-gray-700">{category.name}</h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-6">
             {category.items.map((item) => (
               <div
                 key={item.id}

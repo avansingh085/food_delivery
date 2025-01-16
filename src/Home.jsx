@@ -79,7 +79,7 @@ const Home = () => {
       <Upload />
 
       {showLoginPopup && (
-        <div className="fixed bottom-0 place-self-center w-2/6 bg-white shadow-lg p-6 border-t-2 border-gray-300 z-50">
+        <div className="fixed bottom-0 place-self-center h-96 w-96 md:w-2/6 md:h-96 bg-white shadow-lg p-6 border-t-2 border-gray-300 z-50">
           <h2 className="text-lg font-bold text-gray-800 mb-4">Login</h2>
           {!otpSent ? (
             <div>
