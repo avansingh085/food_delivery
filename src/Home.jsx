@@ -5,6 +5,7 @@ import Craving_food from "./Craving_food";
 import New_item from "./New_item";
 import FoodCategories from "./food_item";
 import Upload from "./upload_image";
+import SearchComponent from "./search_item";
 
 const Home = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
@@ -70,16 +71,24 @@ const Home = () => {
   };
 
   return (
-    <div className="w-screen h-auto grid bg-gray-200">
-      <Header />
-      <Detect_location />
-      <Craving_food />
-      <New_item />
-      <FoodCategories />
-      <Upload />
+    <div className="w-screen h-screen bg-gray-200 flex flex-col">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 w-full z-50 bg-white">
+        <Header />
+      </div>
 
+      {/* Main Content (Fixed Search bar and other components) */}
+      <div className="flex-1 pt-24"> {/* Adjust padding to account for the fixed header */}
+        <SearchComponent />
+        <Craving_food />
+        <New_item />
+        <FoodCategories />
+        <Upload />
+      </div>
+
+      {/* Login Popup */}
       {showLoginPopup && (
-        <div className="fixed bottom-0 place-self-center h-96 w-96 md:w-2/6 md:h-96 bg-white shadow-lg p-6 border-t-2 border-gray-300 z-50">
+        <div className="fixed bottom-0 left-0 right-0 h-96 bg-white shadow-lg p-6 border-t-2 border-gray-300 z-50">
           <h2 className="text-lg font-bold text-gray-800 mb-4">Login</h2>
           {!otpSent ? (
             <div>

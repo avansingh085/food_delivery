@@ -64,29 +64,36 @@ const FoodMenu = () => {
   };
 
   return (
-    <div className=" bg-gray-50">
-      <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Explore Our Menu</h1>
+    <div className="bg-gray-50 min-h-screen w-screen p-2">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800">
+        Explore Our Menu
+      </h1>
       {categories.map((category) => (
-        <div key={category.name} className="mb-10">
-          <h2 className="text-2xl font-bold text-center mb-4 text-gray-700">{category.name}</h2>
-          <div className="flex flex-wrap items-center justify-center gap-6">
+        <div key={category.name} className="mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-center mb-2 text-gray-700">
+            {category.name}
+          </h2>
+          <div
+            className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2"
+            style={{ gridAutoRows: "1fr" }}
+          >
             {category.items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transform transition duration-300"
+                className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transform transition duration-300 flex flex-col"
               >
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-full h-36 object-cover"
+                  className="w-full h-24 sm:h-32 object-cover"
                 />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{item.description}</p>
-                  <div className="text-xl font-bold text-gray-800">₹{item.price}</div>
+                <div className="p-2 text-sm flex-grow">
+                  <h3 className="font-semibold text-gray-800 truncate">{item.name}</h3>
+                  <p className="text-gray-600 text-xs sm:text-sm truncate">{item.description}</p>
+                  <div className="text-lg font-bold text-gray-800">₹{item.price}</div>
                   <button
-                    onClick={() => setSelectedItem(item)} // Open the modal
-                    className="mt-3 w-full bg-blue-600 text-white text-sm py-2 rounded hover:bg-blue-700"
+                    onClick={() => setSelectedItem(item)}
+                    className="mt-2 w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700 text-xs sm:text-sm"
                   >
                     Customize & Add to Cart
                   </button>
@@ -97,33 +104,13 @@ const FoodMenu = () => {
         </div>
       ))}
 
-      {/* Cart Section */}
-      <div className="mt-10 p-4 bg-white shadow rounded-lg">
-        <h2 className="text-xl font-bold mb-4">Your Cart</h2>
-        {cart.length === 0 ? (
-          <p className="text-gray-600">Your cart is empty.</p>
-        ) : (
-          <ul className="space-y-4">
-            {cart.map((item, index) => (
-              <li
-                key={index}
-                className="flex items-center justify-between border-b pb-2"
-              >
-                <span>
-                  {item.name} ({item.customization.size}, {item.customization.crust}, {item.customization.extraCheese ? "Extra Cheese" : "No Extra Cheese"}, {item.customization.sugar} ml sugar)
-                </span>
-                <span className="text-gray-800 font-semibold">₹{item.price}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
       {/* Customization Modal */}
       {selectedItem && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">Customize Your {selectedItem.name}</h2>
+            <h2 className="text-xl font-bold mb-4 text-gray-800">
+              Customize Your {selectedItem.name}
+            </h2>
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold mb-2">Sugar (ml):</label>
               <input
@@ -170,13 +157,13 @@ const FoodMenu = () => {
             </div>
             <div className="flex justify-end space-x-4">
               <button
-                onClick={() => setSelectedItem(null)} // Close modal
+                onClick={() => setSelectedItem(null)}
                 className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
               >
                 Cancel
               </button>
               <button
-                onClick={addToCart} // Add item to cart
+                onClick={addToCart}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
                 Add to Cart
