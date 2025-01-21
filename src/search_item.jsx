@@ -14,11 +14,10 @@ const SearchComponent = () => {
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState(foodItems);
 
-  // Initialize Fuse.js with food items and options for fuzzy search
   const fuse = new Fuse(foodItems, {
     includeScore: true,
-    threshold: 0.8, // Allow more tolerance for typos (can be adjusted)
-    keys: ['name'],  // If you have more fields in your data, you can add them here.
+    threshold: 0.8, 
+    keys: ['name'], 
   });
 
   const handleSearch = (e) => {
@@ -30,19 +29,18 @@ const SearchComponent = () => {
       return;
     }
 
-    // Perform the fuzzy search with Fuse.js
-    const results = fuse.search(searchQuery).slice(0, 5); // Limit to top 5 results
+    const results = fuse.search(searchQuery).slice(0, 5); 
 
-    setFilteredItems(results.map(result => result.item)); // Extract food item names from results
+    setFilteredItems(results.map(result => result.item)); 
   };
 
   return (
     <div className="w-screen h-auto bg-gray-100">
-      {/* Fixed Header */}
+    
       
 
-      {/* Search Input */}
-      <div className="pt-2 px-4"> {/* Added padding to ensure content stays below the fixed header */}
+      
+      <div className="pt-2 px-4"> 
         <div className="relative max-w-md mx-auto">
           <input
             type="text"
@@ -52,12 +50,12 @@ const SearchComponent = () => {
             placeholder="Search food items..."
           />
 
-          {/* Suggestions List or No Results Message */}
+         
           {query && filteredItems.length > 0 && (
             <ul className="absolute top-16 w-full bg-white shadow-lg border mt-2 rounded-lg">
               {filteredItems.map((item, index) => (
                 <li key={index} className="p-2 border-b border-gray-200 hover:bg-gray-100">
-                  {/* Highlight matching part of the search */}
+                  
                   {highlightMatchingText(item, query)}
                 </li>
               ))}
@@ -75,9 +73,9 @@ const SearchComponent = () => {
   );
 };
 
-// Function to highlight the matching part of the text
+
 const highlightMatchingText = (text, query) => {
-  const regex = new RegExp(`(${query})`, 'gi'); // Case insensitive regex
+  const regex = new RegExp(`(${query})`, 'gi'); 
   return text.split(regex).map((part, index) =>
     regex.test(part) ? <span key={index} className="text-indigo-600 font-semibold">{part}</span> : part
   );

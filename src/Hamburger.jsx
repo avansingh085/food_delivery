@@ -1,31 +1,40 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const HamburgerMenu = ({isMenuOpen,setIsMenuOpen}) => {
-  
+const HamburgerMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // User auth state
   const [hasAdminPermission, setHasAdminPermission] = useState(false); // Admin permission state
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   const toggleAuth = () => {
     setIsAuthenticated(!isAuthenticated);
   };
 
   return (
-    <div className="fixed z-20 min-h-screen  ">
-     
+    <div className="fixed   z-50">
+      
       <div
-        className={`absolute top-0 left-0   min-h-screen bg-gray-800 bg-opacity-75 flex justify-center items-center transition-all duration-1000 ${
-          isMenuOpen ? 'w-52 opacity-100 ' : 'w-0 opacity-0'
+        className={`fixed inset-0 bg-gray-800 bg-opacity-50 transition-opacity duration-300 ${
+          isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
+        onClick={() => setIsMenuOpen(false)} 
+      ></div>
+
+      <div
+        className={`fixed top-0 left-0 h-full bg-white shadow-lg transform transition-transform duration-300 ${
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        } w-64 sm:w-72`}
       >
-        
-        <div className="bg-white w-64 p-6 space-y-6 rounded-lg shadow-lg">
+        <div className="p-6 space-y-6">
+         
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="text-gray-600 hover:text-gray-900 text-2xl font-semibold"
+          >
+            ✕
+          </button>
+
           <ul className="space-y-6">
-            {/* Conditionally Rendered Login/Logout */}
+            
             <li>
               <button
                 onClick={toggleAuth}
@@ -35,11 +44,10 @@ const HamburgerMenu = ({isMenuOpen,setIsMenuOpen}) => {
               </button>
             </li>
 
-            {/* Food Delivery Options */}
             <li>
               <Link
                 to="/order-food"
-                className="w-full py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
+                className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
               >
                 Order Food
               </Link>
@@ -47,48 +55,41 @@ const HamburgerMenu = ({isMenuOpen,setIsMenuOpen}) => {
             <li>
               <Link
                 to="/track-order"
-                className="w-full py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
+                className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
               >
                 Track Order
               </Link>
             </li>
-
-            {/* About Us Option */}
             <li>
               <Link
                 to="/about-us"
-                className="w-full py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
+                className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
               >
                 About Us
               </Link>
             </li>
-
-            {/* Contact Option */}
             <li>
               <Link
                 to="/contact"
-                className="w-full py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
+                className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
               >
                 Contact Us
               </Link>
             </li>
-
-            {/* Settings Option */}
             <li>
               <Link
                 to="/settings"
-                className="w-full py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
+                className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
               >
                 Settings
               </Link>
             </li>
 
-            {/* Admin Option (Visible only if user has permission) */}
             {hasAdminPermission && (
               <li>
                 <Link
                   to="/admin"
-                  className="w-full py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
+                  className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
                 >
                   Admin Page
                 </Link>
@@ -96,7 +97,7 @@ const HamburgerMenu = ({isMenuOpen,setIsMenuOpen}) => {
             )}
           </ul>
         </div>
-        </div>
+      </div>
     </div>
   );
 };

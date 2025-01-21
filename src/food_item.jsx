@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import {Link} from 'react-router-dom'
 const categories = [
   {
     name: "Pizzas",
@@ -82,11 +82,12 @@ const FoodMenu = () => {
                 key={item.id}
                 className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transform transition duration-300 flex flex-col"
               >
-                <img
+             <Link to="/food" key={Math.random()} >  <img
                   src={item.image}
                   alt={item.name}
                   className="w-full h-24 sm:h-32 object-cover"
                 />
+                </Link>
                 <div className="p-2 text-sm flex-grow">
                   <h3 className="font-semibold text-gray-800 truncate">{item.name}</h3>
                   <p className="text-gray-600 text-xs sm:text-sm truncate">{item.description}</p>

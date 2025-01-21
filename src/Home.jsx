@@ -6,7 +6,7 @@ import New_item from "./New_item";
 import FoodCategories from "./food_item";
 import Upload from "./upload_image";
 import SearchComponent from "./search_item";
-
+import Bottom_NaveBar from './bottom_navbar'
 const Home = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
@@ -58,15 +58,15 @@ const Home = () => {
   const handleLogin = () => {
     const enteredOtp = otp.join("");
     if (enteredOtp === "123456") {
-      alert("Login successful!");
+     
       setShowLoginPopup(false); // Close the popup after successful login
     } else {
-      alert("Invalid OTP. Please try again.");
+     
     }
   };
 
   const handleSkipLogin = () => {
-    alert("You have skipped the login.");
+   
     setShowLoginPopup(false);
   };
 
@@ -87,81 +87,85 @@ const Home = () => {
       </div>
 
       {/* Login Popup */}
-      {showLoginPopup && (
-        <div className="fixed bottom-0 left-0 right-0 h-96 bg-white shadow-lg p-6 border-t-2 border-gray-300 z-50">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Login</h2>
-          {!otpSent ? (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Enter Mobile Number
-              </label>
-              <input
-                type="tel"
-                maxLength="10"
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value)}
-                placeholder="Enter your mobile number"
-                className="w-full border rounded px-3 py-2 mb-4"
-              />
-              <button
-                onClick={handleSendOtp}
-                className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-              >
-                Send OTP
-              </button>
-              <button
-                onClick={handleSkipLogin}
-                className="mt-4 w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600"
-              >
-                Skip Login
-              </button>
-            </div>
-          ) : (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Enter OTP
-              </label>
-              <div className="flex justify-between space-x-2 mb-4">
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    id={`otp-${index}`}
-                    type="text"
-                    maxLength="1"
-                    value={digit}
-                    onChange={(e) => handleOtpChange(e.target.value, index)}
-                    className="w-10 h-10 border rounded text-center text-lg font-bold text-gray-700 focus:ring-2 focus:ring-blue-500"
-                  />
-                ))}
-              </div>
-              <button
-                onClick={handleLogin}
-                className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-              >
-                Login
-              </button>
-              {resendTimer === 0 ? (
-                <button
-                  onClick={handleSendOtp}
-                  className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-                >
-                  Resend OTP
-                </button>
-              ) : (
-                <p className="mt-4 text-center text-gray-500">
-                  Resend OTP in {resendTimer}s
-                </p>
-              )}
-              <button
-                onClick={handleSkipLogin}
-                className="mt-4 w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600"
-              >
-                Skip Login
-              </button>
-            </div>
-          )}
+     {/* Login Popup */}
+{showLoginPopup && (
+  <div className="fixed bottom-0 left-0 right-0 h-96 bg-white shadow-lg p-6 border-t-2 border-gray-300 z-50 
+                  md:w-1/3 md:h-auto md:rounded-md md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2">
+    <h2 className="text-lg font-bold text-gray-800 mb-4">Login</h2>
+    {!otpSent ? (
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Enter Mobile Number
+        </label>
+        <input
+          type="tel"
+          maxLength="10"
+          value={mobileNumber}
+          onChange={(e) => setMobileNumber(e.target.value)}
+          placeholder="Enter your mobile number"
+          className="w-full border rounded px-3 py-2 mb-4"
+        />
+        <button
+          onClick={handleSendOtp}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
+          Send OTP
+        </button>
+        <button
+          onClick={handleSkipLogin}
+          className="mt-4 w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600"
+        >
+          Skip Login
+        </button>
+      </div>
+    ) : (
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Enter OTP
+        </label>
+        <div className="flex justify-between space-x-2 mb-4">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              id={`otp-${index}`}
+              type="text"
+              maxLength="1"
+              value={digit}
+              onChange={(e) => handleOtpChange(e.target.value, index)}
+              className="w-10 h-10 border rounded text-center text-lg font-bold text-gray-700 focus:ring-2 focus:ring-blue-500"
+            />
+          ))}
         </div>
-      )}
+        <button
+          onClick={handleLogin}
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+        >
+          Login
+        </button>
+        {resendTimer === 0 ? (
+          <button
+            onClick={handleSendOtp}
+            className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          >
+            Resend OTP
+          </button>
+        ) : (
+          <p className="mt-4 text-center text-gray-500">
+            Resend OTP in {resendTimer}s
+          </p>
+        )}
+        <button
+          onClick={handleSkipLogin}
+          className="mt-4 w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600"
+        >
+          Skip Login
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
+      <Bottom_NaveBar/>
     </div>
   );
 };
