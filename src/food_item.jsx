@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import {Link} from 'react-router-dom'
+import axiosInstance from "./axiosInstance";
+import { useSelector,useDispatch } from "react-redux";
+import { setUser } from "./globSlice";
+import axios from "axios";
 const categories = [
   {
     name: "Pizzas",
@@ -34,8 +38,10 @@ const categories = [
 ];
 
 const FoodMenu = () => {
-  const [cart, setCart] = useState([]);
+ 
   const [selectedItem, setSelectedItem] = useState(null);
+  const {User} =useSelector((state)=>state.Data);
+  const dispatch=useDispatch();
   const [customization, setCustomization] = useState({
     sugar: 0,
     size: "Medium",
@@ -43,13 +49,19 @@ const FoodMenu = () => {
     extraCheese: false,
   });
 
-  const addToCart = () => {
+  const addToCart =async () => {
     if (selectedItem) {
-      setCart([...cart, { ...selectedItem, customization }]);
-      alert(
-        `${selectedItem.name} added to cart with customization: ${JSON.stringify(customization)}`
-      );
-      setSelectedItem(null); // Close modal
+     
+      try{
+         let res=await  axios.post("http://localhost:5000/addCart",{mobile:User?.mobile,item:{...selectedItem, customization} });
+         
+        dispatch(setUser(res.data.user));
+        }catch(err)
+      {
+         console.log(err,"PPPPPPPPPPP");
+      }
+     
+      setSelectedItem(null);
       setCustomization({
         sugar: 0,
         size: "Medium",
@@ -104,8 +116,6 @@ const FoodMenu = () => {
           </div>
         </div>
       ))}
-
-      {/* Customization Modal */}
       {selectedItem && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">

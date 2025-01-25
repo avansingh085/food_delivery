@@ -1,9 +1,14 @@
 // App.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {Link} from 'react-router-dom'
+import { useSelector } from "react-redux";
 const Bottom_NavBar = () => {
   const [cartCount, setCartCount] = useState(0);
-
+   const cart=useSelector((state)=>state.Data.User)?.cart||[];
+   console.log(cart,"LLLLLLLLL")
+   useEffect(()=>{
+    setCartCount(cart.length);
+   },[cart])
   return (
     <div className="flex flex-col min-h-fit bg-gray-100">
      

@@ -1,51 +1,141 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
-
-// Example cart data
-const cartItems = [
-  {
-    id: 1,
-    title: 'Delicious Burger',
-    price: 12.99,
-    quantity: 2,
-    image: 'https://www.foodandwine.com/thmb/4qg95tjf0mgdHqez5OLLYc0PNT4=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/classic-cheese-pizza-FT-RECIPE0422-31a2c938fc2546c9a07b7011658cfd05.jpg',
-  },
-  {
-    id: 2,
-    title: 'Cheese Pizza',
-    price: 10.99,
-    quantity: 1,
-    image: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Pizza_with_pepperoni.jpg',
-  },
-];
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { FaTrashAlt, FaArrowLeft } from "react-icons/fa";
+import { setUser } from "./globSlice";
+import axiosInstance from "./axiosInstance";
 
 const CartPage = () => {
-  const [totalPrice, setTotalPrice] = useState(cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0));
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const mobile = useSelector((state) => state.Data.User?.mobile);
+  const User = useSelector((state) => state.Data);
+  const [cartItems, setCartItems] = useState(User?.User?.cart || []);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [operationQueue, setOperationQueue] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
 
-  // Handle the Payment button click
+  const fetchCartData = async () => {
+    try {
+      const response = await axiosInstance.get("http://localhost:5000/profile");
+      const user = response.data.User;
+      dispatch(setUser(user));
+      setCartItems(user.cart || []);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartData();
+    loadRazorpayScript(); // Load Razorpay script on component mount
+  }, []);
+
+  useEffect(() => {
+    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    setTotalPrice(total.toFixed(2));
+  }, [cartItems]);
+
+  // Dynamically load Razorpay script
+  const loadRazorpayScript = () => {
+    if (document.getElementById("razorpay-script")) {
+      setIsRazorpayLoaded(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.id = "razorpay-script";
+    script.onload = () => setIsRazorpayLoaded(true);
+    script.onerror = (error) => {
+      console.error("Error loading Razorpay script:", error);
+    };
+    document.body.appendChild(script);
+  };
+
+  const enqueueOperation = (operation) => {
+    setOperationQueue((prevQueue) => [...prevQueue, operation]);
+  };
+
+  const processQueue = useCallback(async () => {
+    if (isProcessing || operationQueue.length === 0) return;
+
+    setIsProcessing(true);
+
+    const currentOperation = operationQueue[0];
+
+    try {
+      await currentOperation();
+    } catch (error) {
+      console.error("Error processing operation:", error);
+    } finally {
+      setOperationQueue((prevQueue) => prevQueue.slice(1));
+      setIsProcessing(false);
+    }
+  }, [isProcessing, operationQueue]);
+
+  useEffect(() => {
+    if (operationQueue.length > 0) {
+      processQueue();
+    }
+  }, [operationQueue, processQueue]);
+
+  const updateQuantity = (id, quantity) => {
+    const operation = async () => {
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
+        )
+      );
+
+      await axiosInstance.post("http://localhost:5000/updateCart", {
+        mobile,
+        id,
+        quantity,
+      });
+
+      fetchCartData();
+    };
+
+    enqueueOperation(operation);
+  };
+
+  const deleteCartItem = (id) => {
+    const operation = async () => {
+      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+
+      await axiosInstance.post("http://localhost:5000/deleteCart", { mobile, id });
+
+      fetchCartData();
+    };
+
+    enqueueOperation(operation);
+  };
+
   const handlePayment = () => {
-    // Initialize Razorpay payment gateway
+    if (!isRazorpayLoaded) {
+      console.error("Razorpay SDK not loaded");
+      return;
+    }
+
     const options = {
-      key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
+      key: "rzp_test_hI0niYSDJZ36yP", // Replace with your Razorpay key
       amount: totalPrice * 100, // Amount in paise
-      currency: 'INR',
-      name: 'Food Cart',
-      description: 'Payment for food items',
-      image: 'https://your-logo-url.com/logo.png',
+      currency: "INR",
+      name: "Cart Payment",
+      description: "Complete your purchase",
       handler: (response) => {
-        alert('Payment successful!');
+        alert("Payment successful!");
         console.log(response);
-        // Logic after successful payment (e.g., redirect to order confirmation page)
       },
       prefill: {
-        name: 'John Doe',
-        email: 'john@example.com',
-        contact: '9999999999',
+        name: "John Doe",
+        email: "john@example.com",
+        contact: mobile || "9999999999",
       },
       theme: {
-        color: '#F37254',
+        color: "#F37254",
       },
     };
 
@@ -53,54 +143,94 @@ const CartPage = () => {
     rzp.open();
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6 bg-gray-100">
-      {/* Back Button */}
-      <button
-        onClick={() => navigate(-1)} // Go back to the previous page
-        className="flex items-center text-indigo-600 mb-6"
-      >
-        <FaArrowLeft className="mr-2" />
-        Back
-      </button>
-
-      {/* Cart Header */}
+      <div className="flex justify-between items-center mb-6">
+        <button
+          onClick={handleBack}
+          className="flex items-center text-indigo-600 hover:text-indigo-800"
+        >
+          <FaArrowLeft className="mr-2" />
+          Back
+        </button>
+        {cartItems.length > 0 && (
+          <button
+            onClick={handlePayment}
+            disabled={isProcessing || !isRazorpayLoaded}
+            className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition duration-300 w-full sm:w-auto"
+          >
+            Proceed to Payment
+          </button>
+        )}
+      </div>
       <div className="text-center space-y-4 mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Your Cart</h1>
       </div>
 
-      {/* Cart Items List */}
       <div className="space-y-4">
-        {cartItems.map((item) => (
-          <div key={item.id} className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
-            <img src={item.image} alt={item.title} className="w-24 h-24 object-cover rounded-lg" />
-            <div className="flex-grow ml-4">
-              <h2 className="text-xl font-semibold text-gray-800">{item.title}</h2>
-              <p className="text-gray-600">Price: ₹{item.price}</p>
-              <p className="text-gray-600">Quantity: {item.quantity}</p>
+        {cartItems.length > 0 ? (
+          cartItems.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md sm:flex-row flex-col"
+            >
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-24 h-24 object-cover rounded-lg mb-4 sm:mb-0"
+                onError={(e) => (e.target.src = "/default-image.jpg")}
+              />
+              <div className="flex-grow ml-4">
+                <h2 className="text-xl font-semibold text-gray-800">{item.title}</h2>
+                <p className="text-gray-600">Price: ₹{item.price}</p>
+                <div className="flex items-center mt-2">
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    disabled={isProcessing || item.quantity <= 1}
+                    className="bg-gray-300 px-3 py-1 rounded-l-md text-gray-800 hover:bg-gray-400"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    readOnly
+                    className="w-12 text-center border-t border-b border-gray-300"
+                  />
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    disabled={isProcessing}
+                    className="bg-gray-300 px-3 py-1 rounded-r-md text-gray-800 hover:bg-gray-400"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <button
+                onClick={() => deleteCartItem(item.id)}
+                disabled={isProcessing}
+                className="text-red-500 hover:text-red-600"
+              >
+                <FaTrashAlt size={20} />
+              </button>
             </div>
-            <div>
-              <p className="text-lg font-semibold text-gray-800">₹{item.price * item.quantity}</p>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <h1 className="text-center text-xl text-gray-600">Your cart is empty!</h1>
+        )}
       </div>
 
-      {/* Total Price */}
-      <div className="mt-6 flex justify-between items-center p-4 bg-white rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold text-gray-800">Total</h2>
-        <p className="text-2xl font-semibold text-gray-800">₹{totalPrice}</p>
-      </div>
-
-      {/* Payment Button */}
-      <div className="mt-6 flex justify-center">
-        <button
-          onClick={handlePayment}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition duration-300"
-        >
-          Proceed to Payment
-        </button>
-      </div>
+      {cartItems.length > 0 && (
+        <div className="mt-6 flex justify-between items-center p-4 bg-white rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-gray-800">Total</h2>
+          <p className="text-2xl font-semibold text-gray-800">₹{totalPrice}</p>
+        </div>
+      )}
     </div>
   );
 };

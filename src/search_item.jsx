@@ -9,7 +9,6 @@ const foodItems = [
   'Cucumber', 'Tomato', 'Carrot', 'Potato', 'Onion', 'Garlic', 'Spinach',
   'Broccoli', 'Lettuce', 'Zucchini', 'Cauliflower', 'Eggplant', 'Asparagus'
 ];
-
 const SearchComponent = () => {
   const [query, setQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState(foodItems);

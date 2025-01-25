@@ -121,7 +121,6 @@ const FoodDetailPage = () => {
         </div>
       </div>
 
-      {/* Add to Cart Button */}
       <div className="mt-6 flex justify-center">
         <button
           onClick={handleAddToCart}
@@ -131,7 +130,6 @@ const FoodDetailPage = () => {
         </button>
       </div>
 
-      {/* Reviews Section */}
       <div className="mt-10">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Customer Reviews</h2>
         <div className="space-y-4">
@@ -147,7 +145,6 @@ const FoodDetailPage = () => {
         </div>
       </div>
 
-      {/* Submit Your Review */}
       <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
         <h3 className="text-lg font-semibold text-gray-800">Submit Your Review</h3>
         <div className="space-y-4 mt-4">
