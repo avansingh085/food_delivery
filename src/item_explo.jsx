@@ -48,39 +48,43 @@ const FoodDetailPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-gray-100">
-    
+    <div className="max-w-7xl mx-auto p-6 bg-gradient-to-br from-blue-50 to-blue-200">
+
+      {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center text-indigo-600 mb-6"
+        className="flex items-center text-indigo-600 mb-6 hover:underline text-lg font-medium"
       >
         <FaArrowLeft className="mr-2" />
         Back
       </button>
 
-     
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-gray-800">{foodItem.title}</h1>
-        <p className="text-xl text-gray-600">${foodItem.price}</p>
+      {/* Food Title and Price */}
+      <div className="text-center space-y-4 mb-6">
+        <h1 className="text-3xl sm:text-4xl font-semibold text-gray-800">{foodItem.title}</h1>
+        <p className="text-xl sm:text-2xl text-gray-600">${foodItem.price}</p>
       </div>
 
+    
       <div className="flex justify-center my-6">
-        <img src={foodItem.image} alt={foodItem.title} className="rounded-lg shadow-lg w-full max-w-md" />
+        <img src={foodItem.image} alt={foodItem.title} className="rounded-xl shadow-lg w-full sm:max-w-lg" />
       </div>
 
       <div className="text-center mb-6">
         <p className="text-lg text-gray-600">{foodItem.description}</p>
       </div>
 
-      <div className="space-y-6">
+     
+      <div className="space-y-8">
+       
         <div>
-          <h2 className="text-xl font-semibold text-gray-800">Select Size</h2>
-          <div className="flex justify-center space-x-4">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Select Size</h2>
+          <div className="flex flex-wrap justify-center space-x-6">
             {foodItem.customizationOptions[0].options.map((size, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedSize(size)}
-                className={`px-4 py-2 rounded-full ${selectedSize === size ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+                className={`px-6 py-3 rounded-lg text-lg font-semibold ${selectedSize === size ? 'bg-indigo-600 text-white' : 'bg-gray-300 text-gray-700'} hover:bg-indigo-500 transition duration-300`}
               >
                 {size}
               </button>
@@ -88,11 +92,12 @@ const FoodDetailPage = () => {
           </div>
         </div>
 
+   
         <div>
-          <h2 className="text-xl font-semibold text-gray-800">Select Toppings</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Select Toppings</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
             {foodItem.customizationOptions[1].options.map((topping, index) => (
-              <label key={index} className="flex items-center space-x-2">
+              <label key={index} className="flex items-center space-x-3 text-lg">
                 <input
                   type="checkbox"
                   value={topping}
@@ -106,13 +111,13 @@ const FoodDetailPage = () => {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-gray-800">Select Sauce</h2>
-          <div className="flex justify-center space-x-4">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Select Sauce</h2>
+          <div className="flex flex-wrap justify-center space-x-6">
             {foodItem.customizationOptions[2].options.map((sauce, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedSauce(sauce)}
-                className={`px-4 py-2 rounded-full ${selectedSauce === sauce ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+                className={`px-6 py-3 rounded-lg text-lg font-semibold ${selectedSauce === sauce ? 'bg-indigo-600 text-white' : 'bg-gray-300 text-gray-700'} hover:bg-indigo-500 transition duration-300`}
               >
                 {sauce}
               </button>
@@ -121,22 +126,22 @@ const FoodDetailPage = () => {
         </div>
       </div>
 
-      <div className="mt-6 flex justify-center">
+      <div className="mt-8 flex justify-center">
         <button
           onClick={handleAddToCart}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition duration-300"
+          className="bg-indigo-600 text-white px-8 py-4 rounded-lg shadow-lg hover:bg-indigo-500 transition duration-300"
         >
           Add to Cart
         </button>
       </div>
 
       <div className="mt-10">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Customer Reviews</h2>
-        <div className="space-y-4">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4">Customer Reviews</h2>
+        <div className="space-y-6">
           {foodItem.reviews.map((review, index) => (
-            <div key={index} className="p-4 bg-white rounded-lg shadow-md">
-              <div className="flex items-center space-x-2">
-                <span className="font-bold text-gray-700">{review.username}</span>
+            <div key={index} className="p-6 bg-white rounded-lg shadow-md">
+              <div className="flex items-center space-x-3">
+                <span className="font-semibold text-gray-700">{review.username}</span>
                 <span className="text-yellow-500">{"★".repeat(review.rating)}</span>
               </div>
               <p className="text-gray-600">{review.comment}</p>
@@ -146,14 +151,14 @@ const FoodDetailPage = () => {
       </div>
 
       <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold text-gray-800">Submit Your Review</h3>
-        <div className="space-y-4 mt-4">
+        <h3 className="text-xl sm:text-2xl font-semibold text-gray-800">Submit Your Review</h3>
+        <div className="space-y-6 mt-4">
           <div>
-            <label className="text-gray-700">Rating</label>
+            <label className="text-lg text-gray-700">Rating</label>
             <select
               value={userRating}
               onChange={(e) => setUserRating(parseInt(e.target.value))}
-              className="w-full p-2 border rounded-lg"
+              className="w-full p-4 border rounded-lg"
             >
               <option value={0}>Select rating</option>
               {[1, 2, 3, 4, 5].map((rating) => (
@@ -163,18 +168,18 @@ const FoodDetailPage = () => {
           </div>
 
           <div>
-            <label className="text-gray-700">Comment</label>
+            <label className="text-lg text-gray-700">Comment</label>
             <textarea
               value={userComment}
               onChange={(e) => setUserComment(e.target.value)}
-              className="w-full p-2 border rounded-lg"
+              className="w-full p-4 border rounded-lg"
               placeholder="Write your comment here"
             />
           </div>
 
           <button
             onClick={handleSubmitReview}
-            className="w-full bg-blue-500 text-white py-2 rounded-lg"
+            className="w-full bg-indigo-600 text-white py-3 rounded-lg shadow-lg hover:bg-indigo-500 transition duration-300"
           >
             Submit Review
           </button>

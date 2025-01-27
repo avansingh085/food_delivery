@@ -10,8 +10,7 @@ import Bottom_NaveBar from "./bottom_navbar";
 import { setLogin, setUser } from "./globSlice";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-
-const url = "http://localhost:5000"; 
+const url = "https://fooddeliverybackend-7a1h.onrender.com"; 
 const LoginPopup = ({
   mobileNumber,
   setMobileNumber,
@@ -112,7 +111,6 @@ const LoginPopup = ({
   );
 };
 
-// Home Component
 const Home = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
@@ -155,7 +153,7 @@ const Home = () => {
         setMessage(response.data.message || "Invalid OTP");
       }
     } catch (error) {
-      console.log(error,"LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+      console.log(error,"LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
       setMessage(error || "Invalid OTP");
     }
   };

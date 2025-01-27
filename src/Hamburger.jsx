@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const HamburgerMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // User auth state
-  const [hasAdminPermission, setHasAdminPermission] = useState(false); // Admin permission state
+  const [hasAdminPermission, setHasAdminPermission] = useState(false); 
 
   const toggleAuth = () => {
     setIsAuthenticated(!isAuthenticated);
@@ -54,7 +54,7 @@ const HamburgerMenu = ({ isMenuOpen, setIsMenuOpen }) => {
             </li>
             <li>
               <Link
-                to="/track-order"
+                to="/OrderTracker"
                 className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
               >
                 Track Order

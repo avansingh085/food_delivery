@@ -34,8 +34,6 @@ const FullWidthSlider = () => {
       <h2 className="text-center text-2xl font-serif py-4 text-gray-800">
         What's New
       </h2>
-
-      {/* Horizontal Scrollable Section */}
       <div className="overflow-x-auto whitespace-nowrap scroll-smooth  hide-scroll-bar px-4">
         {items.map((item) => (
           <div

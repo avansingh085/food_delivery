@@ -9,8 +9,8 @@ import Setting from './setting';
 import { setLogin, setUser } from './globSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from './axiosInstance';
-
-const url = 'http://localhost:5000';
+import Location from './location'
+const url ="https://fooddeliverybackend-7a1h.onrender.com";
 
 function Main_Page() {
   const dispatch = useDispatch();
@@ -43,10 +43,10 @@ function Main_Page() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<Home />} />
-          <Route path="/contact" element={<Home />} />
+          <Route path="/contact" element={<Location />} />
           <Route path="/food" element={<FoodDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/track-order" element={<OrderTracker />} />
+          <Route path="/OrderTracker" element={<OrderTracker />} />
           <Route path="/settings" element={<Setting />} />
         </Routes>
       </BrowserRouter>

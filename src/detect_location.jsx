@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import apiKey from "./positionstack"; // Import your API key
-
 function App() {
   const [location, setLocation] = useState(null);
   const [detect_click,setDetectClcik]=useState(false);
@@ -15,7 +13,6 @@ function App() {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      // Use PositionStack to get location details
       axios
         .get(
           `http://api.positionstack.com/v1/reverse?access_key=193d5510ce73769dfa24c1fcabb6a77e&query=${latitude},${longitude}&output=json`

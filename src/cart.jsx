@@ -12,107 +12,106 @@ const CartPage = () => {
   const User = useSelector((state) => state.Data);
   const [cartItems, setCartItems] = useState(User?.User?.cart || []);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [operationQueue, setOperationQueue] = useState([]);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const fetchCartData = async () => {
+  // Fetch user cart data
+  const fetchCartData = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("http://localhost:5000/profile");
+      const response = await axiosInstance.get("http://localhost:5000/profile", {
+        params: { mobile },
+      });
       const user = response.data.User;
       dispatch(setUser(user));
       setCartItems(user.cart || []);
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
-  };
+  }, [dispatch, mobile]);
 
-  useEffect(() => {
-    fetchCartData();
-    loadRazorpayScript(); // Load Razorpay script on component mount
-  }, []);
-
-  useEffect(() => {
-    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    setTotalPrice(total.toFixed(2));
-  }, [cartItems]);
-
-  // Dynamically load Razorpay script
-  const loadRazorpayScript = () => {
+  // Load Razorpay script
+  const loadRazorpayScript = useCallback(() => {
     if (document.getElementById("razorpay-script")) {
       setIsRazorpayLoaded(true);
       return;
     }
-
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.id = "razorpay-script";
     script.onload = () => setIsRazorpayLoaded(true);
-    script.onerror = (error) => {
-      console.error("Error loading Razorpay script:", error);
-    };
+    script.onerror = (error) => console.error("Error loading Razorpay:", error);
     document.body.appendChild(script);
-  };
-
-  const enqueueOperation = (operation) => {
-    setOperationQueue((prevQueue) => [...prevQueue, operation]);
-  };
-
-  const processQueue = useCallback(async () => {
-    if (isProcessing || operationQueue.length === 0) return;
-
-    setIsProcessing(true);
-
-    const currentOperation = operationQueue[0];
-
-    try {
-      await currentOperation();
-    } catch (error) {
-      console.error("Error processing operation:", error);
-    } finally {
-      setOperationQueue((prevQueue) => prevQueue.slice(1));
-      setIsProcessing(false);
-    }
-  }, [isProcessing, operationQueue]);
+  }, []);
 
   useEffect(() => {
-    if (operationQueue.length > 0) {
-      processQueue();
-    }
-  }, [operationQueue, processQueue]);
+    fetchCartData();
+    loadRazorpayScript();
+  }, [fetchCartData, loadRazorpayScript]);
 
-  const updateQuantity = (id, quantity) => {
-    const operation = async () => {
-      setCartItems((prevItems) =>
-        prevItems.map((item) =>
-          item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-        )
-      );
+  // Calculate total price
+  useEffect(() => {
+    const total = cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    setTotalPrice(total.toFixed(2));
+  }, [cartItems]);
 
+  // Update cart item quantity
+  const updateQuantity = async (id, quantity) => {
+    setIsProcessing(true);
+    try {
       await axiosInstance.post("http://localhost:5000/updateCart", {
         mobile,
         id,
         quantity,
       });
-
       fetchCartData();
-    };
-
-    enqueueOperation(operation);
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  const deleteCartItem = (id) => {
-    const operation = async () => {
-      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-
-      await axiosInstance.post("http://localhost:5000/deleteCart", { mobile, id });
-
+  // Delete cart item
+  const deleteCartItem = async (id) => {
+    setIsProcessing(true);
+    try {
+      await axiosInstance.post("http://localhost:5000/deleteCart", {
+        mobile,
+        id,
+      });
       fetchCartData();
-    };
-
-    enqueueOperation(operation);
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
+  const updateOrderStatus = async (paymentId) => {
+    try {
+      const response = await axiosInstance.post(
+        "http://localhost:5000/updateOrderStatus",
+        {
+          mobile,
+          paymentId,
+          cartItems,
+        }
+      );
+
+      if (response.data.success) {
+        navigate("/OrderTracker"); // Navigate to the order tracker page
+      } else {
+        console.error("Error updating order status:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
+
+  // Handle payment with Razorpay
   const handlePayment = () => {
     if (!isRazorpayLoaded) {
       console.error("Razorpay SDK not loaded");
@@ -120,14 +119,21 @@ const CartPage = () => {
     }
 
     const options = {
-      key: "rzp_test_hI0niYSDJZ36yP", // Replace with your Razorpay key
-      amount: totalPrice * 100, // Amount in paise
+      key: "rzp_test_hI0niYSDJZ36yP", // Replace with your Razorpay Key ID
+      amount: totalPrice * 100, // Razorpay expects amount in paise
       currency: "INR",
       name: "Cart Payment",
       description: "Complete your purchase",
-      handler: (response) => {
-        alert("Payment successful!");
-        console.log(response);
+      handler: async (response) => {
+        console.log("Payment successful:", response);
+        const { razorpay_payment_id } = response;
+
+        if (!razorpay_payment_id) {
+          console.error("Payment ID not received");
+          return;
+        }
+
+        await updateOrderStatus(razorpay_payment_id);
       },
       prefill: {
         name: "John Doe",
@@ -170,7 +176,6 @@ const CartPage = () => {
       <div className="text-center space-y-4 mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Your Cart</h1>
       </div>
-
       <div className="space-y-4">
         {cartItems.length > 0 ? (
           cartItems.map((item) => (
@@ -185,7 +190,9 @@ const CartPage = () => {
                 onError={(e) => (e.target.src = "/default-image.jpg")}
               />
               <div className="flex-grow ml-4">
-                <h2 className="text-xl font-semibold text-gray-800">{item.title}</h2>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {item.title}
+                </h2>
                 <p className="text-gray-600">Price: ₹{item.price}</p>
                 <div className="flex items-center mt-2">
                   <button
@@ -210,7 +217,6 @@ const CartPage = () => {
                   </button>
                 </div>
               </div>
-
               <button
                 onClick={() => deleteCartItem(item.id)}
                 disabled={isProcessing}
@@ -221,10 +227,11 @@ const CartPage = () => {
             </div>
           ))
         ) : (
-          <h1 className="text-center text-xl text-gray-600">Your cart is empty!</h1>
+          <h1 className="text-center text-xl text-gray-600">
+            Your cart is empty!
+          </h1>
         )}
       </div>
-
       {cartItems.length > 0 && (
         <div className="mt-6 flex justify-between items-center p-4 bg-white rounded-lg shadow-md">
           <h2 className="text-xl font-semibold text-gray-800">Total</h2>

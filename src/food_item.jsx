@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import axiosInstance from "./axiosInstance";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "./globSlice";
 import axios from "axios";
+let url="https://fooddeliverybackend-7a1h.onrender.com";
 const categories = [
   {
     name: "Pizzas",
@@ -38,10 +39,9 @@ const categories = [
 ];
 
 const FoodMenu = () => {
- 
   const [selectedItem, setSelectedItem] = useState(null);
-  const {User} =useSelector((state)=>state.Data);
-  const dispatch=useDispatch();
+  const { User } = useSelector((state) => state.Data);
+  const dispatch = useDispatch();
   const [customization, setCustomization] = useState({
     sugar: 0,
     size: "Medium",
@@ -49,25 +49,21 @@ const FoodMenu = () => {
     extraCheese: false,
   });
 
-  const addToCart =async () => {
+  const addToCart = async () => {
     if (selectedItem) {
-     
-      try{
-         let res=await  axios.post("http://localhost:5000/addCart",{mobile:User?.mobile,item:{...selectedItem, customization} });
-         
+      try {
+        let res = await axios.post(`${url}/addCart`, { mobile: User?.mobile, item: { ...selectedItem, customization } });
         dispatch(setUser(res.data.user));
-        }catch(err)
-      {
-         console.log(err,"PPPPPPPPPPP");
+      } catch (err) {
+        console.log(err, "Error while adding to cart");
       }
-     
       setSelectedItem(null);
       setCustomization({
         sugar: 0,
         size: "Medium",
         crust: "Classic",
         extraCheese: false,
-      }); // Reset customization
+      });
     }
   };
 
@@ -76,37 +72,31 @@ const FoodMenu = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen w-screen p-2">
-      <h1 className="text-2xl sm:text-3xl font-bold text-center mb-4 text-gray-800">
-        Explore Our Menu
-      </h1>
+    <div className="bg-black text-white min-h-screen w-screen p-4">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6">Explore Our Menu</h1>
       {categories.map((category) => (
-        <div key={category.name} className="mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-center mb-2 text-gray-700">
-            {category.name}
-          </h2>
-          <div
-            className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2"
-            style={{ gridAutoRows: "1fr" }}
-          >
+        <div key={category.name} className="mb-10">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-4">{category.name}</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {category.items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white shadow-md rounded-lg overflow-hidden hover:scale-105 transform transition duration-300 flex flex-col"
+                className="bg-white text-black shadow-md rounded-lg overflow-hidden hover:scale-105 transform transition duration-300 flex flex-col"
               >
-             <Link to="/food" key={Math.random()} >  <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-24 sm:h-32 object-cover"
-                />
+                <Link to="/food" key={Math.random()}>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-32 sm:h-40 object-cover"
+                  />
                 </Link>
-                <div className="p-2 text-sm flex-grow">
-                  <h3 className="font-semibold text-gray-800 truncate">{item.name}</h3>
-                  <p className="text-gray-600 text-xs sm:text-sm truncate">{item.description}</p>
-                  <div className="text-lg font-bold text-gray-800">₹{item.price}</div>
+                <div className="p-2 sm:p-4 flex-grow">
+                  <h3 className="text-xs sm:text-sm font-semibold text-black truncate">{item.name}</h3>
+                  <p className="text-xs sm:text-sm text-gray-700 truncate">{item.description}</p>
+                  <div className="text-sm sm:text-base font-bold text-black mt-2">₹{item.price}</div>
                   <button
                     onClick={() => setSelectedItem(item)}
-                    className="mt-2 w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700 text-xs sm:text-sm"
+                    className="mt-4 w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-700 transition duration-300"
                   >
                     Customize & Add to Cart
                   </button>
@@ -116,66 +106,64 @@ const FoodMenu = () => {
           </div>
         </div>
       ))}
+
       {selectedItem && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">
-              Customize Your {selectedItem.name}
-            </h2>
-            <div className="mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white text-black p-8 rounded-lg shadow-xl w-80 sm:w-96">
+            <h2 className="text-2xl font-semibold mb-6">Customize Your {selectedItem.name}</h2>
+            <div className="mb-6">
               <label className="block text-gray-700 font-semibold mb-2">Sugar (ml):</label>
               <input
                 type="number"
                 min="0"
                 value={customization.sugar}
                 onChange={(e) => handleCustomizationChange("sugar", e.target.value)}
-                className="w-full border rounded p-2 text-gray-700"
+                className="w-full border-2 border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-black"
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-6">
               <label className="block text-gray-700 font-semibold mb-2">Size:</label>
               <select
                 value={customization.size}
                 onChange={(e) => handleCustomizationChange("size", e.target.value)}
-                className="w-full border rounded p-2 text-gray-700"
+                className="w-full border-2 border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-black"
               >
                 <option value="Small">Small</option>
                 <option value="Medium">Medium</option>
                 <option value="Large">Large</option>
               </select>
             </div>
-            <div className="mb-4">
+            <div className="mb-6">
               <label className="block text-gray-700 font-semibold mb-2">Crust:</label>
               <select
                 value={customization.crust}
                 onChange={(e) => handleCustomizationChange("crust", e.target.value)}
-                className="w-full border rounded p-2 text-gray-700"
+                className="w-full border-2 border-gray-300 rounded-lg p-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-black"
               >
                 <option value="Classic">Classic</option>
                 <option value="Thin Crust">Thin Crust</option>
                 <option value="Cheese Burst">Cheese Burst</option>
               </select>
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-semibold mb-2">Extra Cheese:</label>
+            <div className="mb-6 flex items-center">
               <input
                 type="checkbox"
                 checked={customization.extraCheese}
                 onChange={(e) => handleCustomizationChange("extraCheese", e.target.checked)}
-                className="mr-2"
+                className="mr-3"
               />
-              Add Extra Cheese
+              <label className="text-gray-700 font-semibold">Add Extra Cheese</label>
             </div>
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-end space-x-6">
               <button
                 onClick={() => setSelectedItem(null)}
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={addToCart}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition duration-300"
               >
                 Add to Cart
               </button>
