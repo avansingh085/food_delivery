@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaTrashAlt, FaArrowLeft } from "react-icons/fa";
 import { setUser } from "./globSlice";
 import axiosInstance from "./axiosInstance";
-
+let url="https://fooddeliverybackend-7a1h.onrender.com";
 const CartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,9 +16,10 @@ const CartPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Fetch user cart data
+  
   const fetchCartData = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("http://localhost:5000/profile", {
+      const response = await axiosInstance.get(`${url}/profile`, {
         params: { mobile },
       });
       const user = response.data.User;
@@ -61,7 +62,7 @@ const CartPage = () => {
   const updateQuantity = async (id, quantity) => {
     setIsProcessing(true);
     try {
-      await axiosInstance.post("http://localhost:5000/updateCart", {
+      await axiosInstance.post(`${url}/updateCart`, {
         mobile,
         id,
         quantity,
@@ -78,7 +79,7 @@ const CartPage = () => {
   const deleteCartItem = async (id) => {
     setIsProcessing(true);
     try {
-      await axiosInstance.post("http://localhost:5000/deleteCart", {
+      await axiosInstance.post(`${url}/deleteCart`, {
         mobile,
         id,
       });
@@ -93,7 +94,7 @@ const CartPage = () => {
   const updateOrderStatus = async (paymentId) => {
     try {
       const response = await axiosInstance.post(
-        "http://localhost:5000/updateOrderStatus",
+        `${url}/updateOrderStatus`,
         {
           mobile,
           paymentId,
