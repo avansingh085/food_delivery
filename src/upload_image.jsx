@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+let url="http://localhost:5000";
+let url1="https://fooddeliverybackend-7a1h.onrender.com"
 const ImageUpload = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -22,7 +23,7 @@ const ImageUpload = () => {
 
     try {
       setUploading(true);
-      const response = await axios.post("http://localhost:5000/upload", formData, {
+      const response = await axios.post(`${url}/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

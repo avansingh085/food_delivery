@@ -27,8 +27,6 @@ function Craving_food() {
       <h2 className="text-3xl font-bold text-center text-white mb-8">
         Craving Food
       </h2>
-
-      {/* Horizontal scrollable container */}
       <div className="relative">
         <div className="flex overflow-x-auto space-x-6 hide-scroll-bar px-2">
           {pizzaItems.map((pizza) => (
@@ -36,13 +34,13 @@ function Craving_food() {
               key={pizza.id}
               className="flex flex-col items-center justify-center w-28 md:w-40 p-4 bg-gray-900 shadow-lg rounded-lg transform transition-transform hover:scale-105"
             >
-              {/* Pizza Image */}
+           
               <img
                 src={pizza.image}
                 alt={pizza.name}
                 className="w-16 md:w-24 h-16 md:h-24 rounded-full object-cover mb-3 border-2 border-gray-700 shadow-md"
               />
-              {/* Pizza Name */}
+            
               <span className="text-center text-xs md:text-sm font-medium text-gray-300">
                 {pizza.name}
               </span>

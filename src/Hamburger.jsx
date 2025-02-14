@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const HamburgerMenu = ({ isMenuOpen, setIsMenuOpen }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // User auth state
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
   const [hasAdminPermission, setHasAdminPermission] = useState(false); 
 
   const toggleAuth = () => {
@@ -44,38 +44,28 @@ const HamburgerMenu = ({ isMenuOpen, setIsMenuOpen }) => {
               </button>
             </li>
 
+           
+           
             <li>
               <Link
-                to="/order-food"
+                to="/MyOrder"
                 className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
               >
-                Order Food
+                My Order
               </Link>
+              
             </li>
             <li>
               <Link
-                to="/OrderTracker"
+                to="/DeliveryDashboard"
                 className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
               >
-                Track Order
+               Delivery Dashboard
               </Link>
+              
             </li>
-            <li>
-              <Link
-                to="/about-us"
-                className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
-              >
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/contact"
-                className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
-              >
-                Contact Us
-              </Link>
-            </li>
+           
+            
             <li>
               <Link
                 to="/settings"
@@ -85,16 +75,23 @@ const HamburgerMenu = ({ isMenuOpen, setIsMenuOpen }) => {
               </Link>
             </li>
 
-            {hasAdminPermission && (
+            <li>
+              <Link
+                to="/AddNewFood"
+                className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
+              >
+                Add New Food
+              </Link>
+            </li>
               <li>
                 <Link
-                  to="/admin"
+                  to="/Admin"
                   className="block py-2 px-4 text-lg font-semibold text-gray-700 hover:bg-gray-200 rounded-md transition-all"
                 >
                   Admin Page
                 </Link>
               </li>
-            )}
+           
           </ul>
         </div>
       </div>

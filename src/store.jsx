@@ -4,7 +4,7 @@ import counterReducer from './globSlice';
 
 const store = configureStore({
   reducer: {
-    Data: counterReducer, // Add your slices here
+    Data: counterReducer, 
   },
 });
 

@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import React, { useEffect, useState, useCallback } from "react";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// Fix for missing marker icon issue in Leaflet
+// Fix leaflet marker icons
 import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
 
-// Create a new Leaflet icon for markers
 const icon = new L.Icon({
   iconUrl: markerIconPng,
   shadowUrl: markerShadowPng,
@@ -17,138 +16,194 @@ const icon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-// Haversine formula to calculate distance between two points (in km)
+// Custom component to handle map clicks
+const MapClickHandler = ({ onMapClick }) => {
+  useMapEvents({
+    click: (e) => onMapClick(e),
+  });
+  return null;
+};
+
+// Geocoding function with error handling
+const reverseGeocode = async (lat, lon) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1&email=your@email.com` // Replace with your email
+    );
+    if (!response.ok) throw new Error('Geocoding failed');
+    const data = await response.json();
+    return data.address || data.display_name || 'Address not found';
+  } catch (error) {
+    console.error('Reverse geocode error:', error);
+    return 'Address unavailable';
+  }
+};
+
+// Distance calculation function
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Radius of the Earth in km
+  const R = 6371;
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos(lat1 * (Math.PI / 180)) *
+    Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; // Distance in km
+  return R * c;
 };
 
 const MapApp = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [pinnedLocation, setPinnedLocation] = useState(null);
-  const [route, setRoute] = useState([]);
   const [routeInfo, setRouteInfo] = useState(null);
+  const [addresses, setAddresses] = useState({
+    user: 'Fetching your location...',
+    pinned: 'Click map to pin location'
+  });
 
-  // Fetch user's current location
+  // Get user location
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
-        },
-        (error) => {
-          console.error("Error fetching location: ", error);
-          alert("Unable to fetch your location. Please allow location access.");
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
-    }
+    const fetchUserLocation = async () => {
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+        
+        const { latitude, longitude } = position.coords;
+        const userAddress = await reverseGeocode(latitude, longitude);
+        
+        setUserLocation([latitude, longitude]);
+        setAddresses(prev => ({
+          ...prev,
+          user: userAddress?.road ? 
+            `${userAddress.road}, ${userAddress.city}` : 
+            'Your current location'
+        }));
+      } catch (error) {
+        console.error('Location error:', error);
+        setAddresses(prev => ({ ...prev, user: 'Location access denied' }));
+      }
+    };
+
+    fetchUserLocation();
   }, []);
 
-  // Handle map click to set the pinned location
-  const handleMapClick = (e) => {
-    const clickedLatLng = e.latlng;
-    setPinnedLocation([clickedLatLng.lat, clickedLatLng.lng]);
-  };
+  // Map click handler
+  const handleMapClick = useCallback(async (e) => {
+    try {
+      const { lat, lng } = e.latlng;
+      const address = await reverseGeocode(lat, lng);
+      
+      setPinnedLocation([lat, lng]);
+      setAddresses(prev => ({
+        ...prev,
+        pinned: address?.road ? 
+          `${address.road}, ${address.city}` : 
+          'Unknown location'
+      }));
 
-  // Calculate the route and distance
-  const calculateRoute = () => {
-    if (userLocation && pinnedLocation) {
-      const distance = calculateDistance(
-        userLocation[0],
-        userLocation[1],
-        pinnedLocation[0],
-        pinnedLocation[1]
-      );
-
-      // Calculate travel time assuming an average speed of 50 km/h
-      const travelTime = (distance / 50) * 60; // Convert to minutes
-
-      setRoute([userLocation, pinnedLocation]);
-      setRouteInfo({
-        distance: distance.toFixed(2), // km
-        duration: Math.ceil(travelTime), // minutes
-      });
+      if (userLocation) {
+        const distance = calculateDistance(userLocation[0], userLocation[1], lat, lng);
+        setRouteInfo({
+          distance: distance.toFixed(2),
+          duration: Math.ceil((distance / 50) * 60)
+        });
+      }
+    } catch (error) {
+      console.error('Map click error:', error);
+      setAddresses(prev => ({ ...prev, pinned: 'Failed to pin location' }));
     }
-  };
+  }, [userLocation]);
 
   return (
-    <div className="h-screen">
-      <h1 className="text-center font-bold text-2xl mt-4">
-        React Leaflet Map with Location Pinning
+    <div className="h-screen flex flex-col">
+      <h1 className="text-center font-bold text-2xl p-4 bg-blue-100">
+        Interactive Location Map
       </h1>
 
-      {userLocation ? (
-        <div>
+      <div className="flex-1 relative">
+        {userLocation ? (
           <MapContainer
             center={userLocation}
             zoom={13}
-            style={{ height: "70vh", width: "100%" }}
-            onClick={handleMapClick} // Attach click handler
+            style={{ height: "100%", width: "100%" }}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              attribution='&copy; OpenStreetMap contributors'
             />
 
-            {/* Marker for user's current location */}
+            <MapClickHandler onMapClick={handleMapClick} />
+
             <Marker position={userLocation} icon={icon}>
-              <Popup>Your current location</Popup>
+              <Popup className="min-w-[200px]">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-blue-600">Your Location</h3>
+                  <p className="text-sm">{addresses.user}</p>
+                  <p className="text-xs text-gray-500">
+                    {userLocation[0].toFixed(4)}, {userLocation[1].toFixed(4)}
+                  </p>
+                </div>
+              </Popup>
             </Marker>
 
-            {/* Marker for the pinned location */}
             {pinnedLocation && (
-              <Marker position={pinnedLocation} icon={icon}>
-                <Popup>
-                  <p>Pinned Location:</p>
-                  <p>
-                    Latitude: {pinnedLocation[0].toFixed(4)}, Longitude:{" "}
-                    {pinnedLocation[1].toFixed(4)}
-                  </p>
-                </Popup>
-              </Marker>
-            )}
-
-            {/* Draw route between current and pinned location */}
-            {route.length > 0 && <Polyline positions={route} color="blue" />}
-          </MapContainer>
-
-          {/* Display route info */}
-          <div className="text-center mt-4">
-            {routeInfo ? (
               <>
-                <p className="text-lg">
-                  Distance: <span className="font-bold">{routeInfo.distance} km</span>
-                </p>
-                <p className="text-lg">
-                  Travel Time: <span className="font-bold">{routeInfo.duration} minutes</span>
-                </p>
+                <Marker position={pinnedLocation} icon={icon}>
+                  <Popup className="min-w-[200px]">
+                    <div className="space-y-1">
+                      <h3 className="font-bold text-red-600">Pinned Location</h3>
+                      <p className="text-sm">{addresses.pinned}</p>
+                      <p className="text-xs text-gray-500">
+                        {pinnedLocation[0].toFixed(4)}, {pinnedLocation[1].toFixed(4)}
+                      </p>
+                    </div>
+                  </Popup>
+                </Marker>
+                
+                <Polyline 
+                  positions={[userLocation, pinnedLocation]} 
+                  color="#3b82f6" 
+                  weight={4}
+                  opacity={0.7}
+                />
               </>
-            ) : (
-              <p>Click on the map to set a pinned location...</p>
             )}
-
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 mt-2"
-              onClick={calculateRoute}
-              disabled={!pinnedLocation} // Disable if no pinned location
-            >
-              {routeInfo ? "Recalculate Route" : "Calculate Route"}
-            </button>
+          </MapContainer>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <p className="text-lg text-gray-600">Loading map...</p>
           </div>
+        )}
+
+        {/* Information Panel */}
+        <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg z-[1000] min-w-[250px]">
+          <h3 className="font-bold text-lg mb-2">Route Details</h3>
+          {routeInfo ? (
+            <>
+              <div className="space-y-2">
+                <p className="flex justify-between">
+                  <span>Distance:</span>
+                  <span className="font-semibold">{routeInfo.distance} km</span>
+                </p>
+                <p className="flex justify-between">
+                  <span>Estimated Time:</span>
+                  <span className="font-semibold">{routeInfo.duration} mins</span>
+                </p>
+              </div>
+              <hr className="my-3" />
+            </>
+          ) : (
+            <p className="text-gray-500">No route calculated</p>
+          )}
+          <p className="text-sm">
+            <span className="font-semibold">Pinned Location:</span><br />
+            {addresses.pinned}
+          </p>
         </div>
-      ) : (
-        <p className="text-center mt-4">Fetching your location...</p>
-      )}
+      </div>
     </div>
   );
 };

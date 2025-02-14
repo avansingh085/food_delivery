@@ -10,7 +10,8 @@ import Bottom_NaveBar from "./bottom_navbar";
 import { setLogin, setUser } from "./globSlice";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-const url = "https://fooddeliverybackend-7a1h.onrender.com"; 
+const url1 = "https://fooddeliverybackend-7a1h.onrender.com"; 
+let url="http://localhost:5000";
 const LoginPopup = ({
   mobileNumber,
   setMobileNumber,
@@ -98,15 +99,15 @@ const LoginPopup = ({
           </button>
         </div>
       )}
-      {message && (
+      {/* {message && (
         <p
           className={`mt-4 text-center ${
-            message.includes("success") ? "text-green-500" : "text-red-500"
+             ? "text-green-500" : "text-red-500"
           }`}
         >
           {message}
         </p>
-      )}
+      )} */}
     </div>
   );
 };
