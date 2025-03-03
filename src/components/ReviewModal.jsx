@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
 import { StarIcon } from "@heroicons/react/24/solid";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 
 const url = "http://localhost:5000";
 

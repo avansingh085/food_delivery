@@ -1,7 +1,7 @@
 import { useDispatch,useSelector } from "react-redux";
 import HamburgerMenu from "./Hamburger"
 import {useEffect, useState} from "react"
-import { setDeliveryLocation } from "./globSlice";
+import { setDeliveryLocation } from "../redux/globSlice";
 const Header=()=>{
      const [isMenuOpen, setIsMenuOpen] = useState(false);
      

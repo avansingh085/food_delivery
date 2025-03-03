@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
-import Detect_location from "./detect_location";
-import Craving_food from "./Craving_food";
-import New_item from "./New_item";
-import FoodCategories from "./food_item";
-import Upload from "./upload_image";
-import SearchComponent from "./search_item";
-import Bottom_NaveBar from "./bottom_navbar";
-import { setLogin, setUser } from "./globSlice";
+import Header from "../components/Header";
+import Detect_location from "../detect_location";
+import Craving_food from "../components/Craving_food";
+import New_item from "../New_item";
+import FoodCategories from "../components/food_item";
+import Upload from "../utils/upload_image";
+import SearchComponent from "../components/search_item";
+import Bottom_NaveBar from "../components/bottom_navbar";
+import { setLogin, setUser } from "../redux/globSlice";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 const url1 = "https://fooddeliverybackend-7a1h.onrender.com"; 
@@ -189,7 +189,7 @@ const Home = () => {
   }, [otpSent, resendTimer]);
 
   return (
-    <div className="w-screen h-screen bg-gray-200 flex flex-col">
+    <div className="  flex flex-col">
       <div className="fixed top-0 left-0 w-full z-50 bg-white">
         <Header />
       </div>
@@ -199,7 +199,7 @@ const Home = () => {
         <Craving_food />
         <New_item />
         <FoodCategories />
-        <Upload />
+       
       </div>
 
       {showLoginPopup && (

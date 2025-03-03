@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FaTrashAlt, FaArrowLeft } from "react-icons/fa";
-import { setCart } from "./globSlice";
-import axiosInstance from "./axiosInstance";
+import { setCart } from "../redux/globSlice";
+import axiosInstance from "../utils/axiosInstance";
 
 const url = "http://localhost:5000";
 

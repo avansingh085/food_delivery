@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback  } from "react";
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser,setCart ,setMenu} from "./globSlice";
-import axiosInstance from "./axiosInstance";
+import { setUser,setCart ,setMenu} from "../redux/globSlice";
+import axiosInstance from "../utils/axiosInstance";
 const API_URL = "https://fooddeliverybackend-7a1h.onrender.com";
 const url="http://localhost:5000";
 const ITEMS_PER_PAGE = 20;
@@ -103,7 +103,7 @@ const FoodMenu = () => {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen w-screen p-4">
+    <div className="bg-white text-black min-h-screen w-screen p-4">
       <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6">Explore Our Menu</h1>
 
       {error && (
@@ -121,7 +121,7 @@ const FoodMenu = () => {
             return(
               <div
                 key={item._id}
-                className="bg-white text-black rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 flex flex-col"
+                className="bg-white text-black rounded-lg overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-300 flex flex-col"
               >
                 <Link to={`/food/${item._id}`} className="flex-grow">
                   <img

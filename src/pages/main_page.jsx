@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import './App.css';
+import '../App.css';
 import Home from './Home';
 import FoodDetailPage from './item_explo';
-import CartPage from './cart';
-import OrderTracker from './OrderTracker';
+import CartPage from '../components/cart';
+import OrderTracker from '../components/OrderTracker';
 import Setting from './setting';
-import { setLogin, setUser,setCart } from './globSlice';
+import { setLogin, setUser,setCart } from '../redux/globSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import axiosInstance from './axiosInstance';
-import Location from './location'
+import axiosInstance from '../utils/axiosInstance';
+import Location from '../components/location'
 import Admin from './Admin'
-import AddNewFood from './AddNewFood';
+import AddNewFood from '../components/AddNewFood';
 import DeliveryDashboard  from './DeliveryDashboard';
 const url1 ="https://fooddeliverybackend-7a1h.onrender.com";
 const url="http://localhost:5000"
