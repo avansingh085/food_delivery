@@ -4,8 +4,6 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser,setCart ,setMenu} from "../redux/globSlice";
 import axiosInstance from "../utils/axiosInstance";
-const API_URL = "https://fooddeliverybackend-7a1h.onrender.com";
-const url="http://localhost:5000";
 const ITEMS_PER_PAGE = 20;
 
 const FoodMenu = () => {
@@ -17,6 +15,7 @@ const FoodMenu = () => {
   const [error, setError] = useState(null);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const { User } = useSelector((state) => state.Data);
+  const {deliveryLocation} = useSelector((state) => state.Data);
   const dispatch = useDispatch();
 
   const [customization, setCustomization] = useState({
@@ -27,14 +26,14 @@ const FoodMenu = () => {
   });
   const fetchCartData = async () => {
     try {
-      const res = await axiosInstance.get(`${url}/getCart`);
-      console.log(res,"PPPPPPPPPPPPPPPPPPPP")
+      const res = await axiosInstance.get(`/getCart`);
+      //console.log(res,"PPPPPPPPPPPPPPPPPPPP")
       if (res.data.success) {
         console.log(res)
         dispatch(setCart(res.data.cart));
       }
     } catch (err) {
-      console.log("error fect cart dat",err)
+     // console.log("error fect cart dat",err)
       console.error("Error fetching cart data:", err);
     }
   };
@@ -42,10 +41,10 @@ const FoodMenu = () => {
     const fetchMenuData = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`${url}/getMenu`, {
+        const response = await axiosInstance.get(`/getMenu`, {
           params: { page: currentPage, limit: ITEMS_PER_PAGE }
         });
-        
+       
         setMenuData(prev => [...prev, ...response.data.items]);
         dispatch(setMenu([...menuData,...response.data.items]));
         setTotalPages(response.data.totalPages);
@@ -75,16 +74,16 @@ const FoodMenu = () => {
     
     setIsAddingToCart(true);
     try {
-      console.log(selectedItem)
-      const res = await axios.post(`${url}/addCart`, {
+     // console.log(selectedItem)
+      const res = await axiosInstance.post(`/addCart`, {
         mobile: User?.mobile,
-        item: { ...selectedItem,customizationOptions:customization }
+        item: { ...selectedItem,customizationOptions:customization,deliveryLocation }
       });
-      console.log(selectedItem,"ppp")
+     // console.log(selectedItem,"ppp")
      fetchCartData();
       
     } catch (err) {
-      console.log(err)
+     // console.log(err)
       setError("Failed to add item to cart. Please try again.");
     } finally {
       setIsAddingToCart(false);
@@ -155,11 +154,11 @@ const FoodMenu = () => {
       ))}
 
       {currentPage < totalPages && (
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-8 ">
           <button
             onClick={() => setCurrentPage(prev => prev + 1)}
             disabled={isLoading}
-            className="bg-gray-800 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
+            className="bg-gray-800 text-white  px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50"
           >
             {isLoading ? 'Loading...' : 'Load More'}
           </button>

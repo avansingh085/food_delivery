@@ -8,10 +8,10 @@ import Upload from "../utils/upload_image";
 import SearchComponent from "../components/search_item";
 import Bottom_NaveBar from "../components/bottom_navbar";
 import { setLogin, setUser } from "../redux/globSlice";
-import axios from "axios";
+import axios, { Axios } from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
-const url1 = "https://fooddeliverybackend-7a1h.onrender.com"; 
-let url="http://localhost:5000";
+
 const LoginPopup = ({
   mobileNumber,
   setMobileNumber,
@@ -129,7 +129,7 @@ const Home = () => {
         setMessage("Please enter a valid mobile number.");
         return;
       }
-      const response = await axios.post(`${url}/send-otp`, { phone: mobileNumber });
+      const response = await axiosInstance.post(`/send-otp`, { phone: mobileNumber });
       setMessage(response.data.message);
       setOtpSent(true);
       setResendTimer(30);
@@ -141,16 +141,17 @@ const Home = () => {
   const verifyOtp = async () => {
     try {
       const enteredOtp = otp.join("");
-      const response = await axios.post(`${url}/verify-otp`, { phone: mobileNumber, otp: enteredOtp });
+      const response = await axiosInstance.post(`/verify-otp`, { phone: mobileNumber, otp: enteredOtp });
       console.log(response,"AVAN SINGH__________________________________________")
       if (response.data.success) {
-        const res = await axios.post(`${url}/login`, { mobile: mobileNumber });
+        const res = await axiosInstance.post(`/login`, { mobile: mobileNumber });
         dispatch(setLogin(true));
         dispatch(setUser(res.data.user));
-        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("BeksToken", res.data.token);
         setMessage(response.data.message);
         setShowLoginPopup(false);
       } else {
+        console.log("not verify otp");
         setMessage(response.data.message || "Invalid OTP");
       }
     } catch (error) {

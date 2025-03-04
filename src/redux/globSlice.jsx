@@ -16,6 +16,7 @@ const counterSlice = createSlice({
     },
     setUser:(state,action)=>{
         state.User=action.payload;
+        state.isLogin=true;
     },
     setCart:(state,action)=>{
         state.cart=action.payload;
@@ -26,7 +27,7 @@ const counterSlice = createSlice({
     }
     ,
     setDeliveryLocation:(state,action)=>{
-      deliveryLocation=action.payload;
+      state.deliveryLocation=action.payload;
     }
    
   },

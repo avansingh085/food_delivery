@@ -12,8 +12,6 @@ import {
   FaSpinner
 } from 'react-icons/fa';
 
-const url = "http://localhost:5000";
-
 const FoodDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -34,7 +32,7 @@ const FoodDetailPage = () => {
   useEffect(() => {
     const fetchFoodItem = async () => {
       try {
-        const { data } = await axiosInstance.get(`${url}/food/${id}`);
+        const { data } = await axiosInstance.get(`/food/${id}`);
         if (data.success && data.item) {
           setFoodItem(data.item);
         } else {
@@ -68,7 +66,7 @@ const FoodDetailPage = () => {
       return;
     }
     try {
-      const { data } = await axiosInstance.post(`${url}/addCart`, {
+      const { data } = await axiosInstance.post(`/addCart`, {
         id,
         options: selectedOptions,
         mobile: user.mobile
@@ -97,7 +95,7 @@ const FoodDetailPage = () => {
       return;
     }
     try {
-      const { data } = await axiosInstance.post(`${url}/api/reviews`, {
+      const { data } = await axiosInstance.post(`/api/reviews`, {
         foodId: id,
         rating: userRating,
         comment: userComment,

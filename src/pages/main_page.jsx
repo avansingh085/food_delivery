@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import '../App.css';
 import Home from './Home';
@@ -6,56 +6,67 @@ import FoodDetailPage from './item_explo';
 import CartPage from '../components/cart';
 import OrderTracker from '../components/OrderTracker';
 import Setting from './setting';
-import { setLogin, setUser,setCart } from '../redux/globSlice';
+import { setLogin, setUser, setCart } from '../redux/globSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../utils/axiosInstance';
-import Location from '../components/location'
-import Admin from './Admin'
+import Location from '../components/location';
+import Admin from './Admin';
 import AddNewFood from '../components/AddNewFood';
-import DeliveryDashboard  from './DeliveryDashboard';
-const url1 ="https://fooddeliverybackend-7a1h.onrender.com";
-const url="http://localhost:5000"
+import DeliveryDashboard from './DeliveryDashboard';
+
 function Main_Page() {
   const dispatch = useDispatch();
   const { isLogin, User } = useSelector((state) => state.Data);
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axiosInstance.get(`${url}/profile`);
-        const cartData=await axiosInstance.get(`${url}/getCart`);
+  
+  const [loading, setLoading] = useState(true); // Loading state
 
-        console.log(res, 'Fetched Profile');
-        if (res.data.success&&cartData.data.success) {
-          dispatch(setLogin(true));
-          dispatch(setCart(cartData.data.cart))
-          dispatch(setUser(res.data.User));
-        } else {
-          dispatch(setLogin(false));
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error);
+  const fetchProfile = async () => {
+    try {
+      const res = await axiosInstance.get(`/profile`);
+      const cartData = await axiosInstance.get(`/getCart`);
+
+     // console.log("AVAN", res, cartData, 'Fetched Profile A');
+      if (res.data.success && cartData.data.success) {
+        dispatch(setLogin(true));
+        dispatch(setCart(cartData.data.cart));
+        dispatch(setUser(res.data.User));
+      } else {
         dispatch(setLogin(false));
       }
-    };
+    } catch (error) {
+      //console.error('Error fetching profile:', error);
+      dispatch(setLogin(false));
+    } finally {
+      setLoading(false); // Stop loading once fetching is done
+    }
+  };
 
+  useEffect(() => {
     fetchProfile();
   }, [dispatch]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-hidden">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about-us" element={< Admin/>} />
-          <Route path="/Admin" element={<Admin/>}/>
-          <Route path="/Location" element={<Location/>}/>
-          <Route path="/DeliveryDashboard" element={<DeliveryDashboard/>}/>
+          <Route path="/about-us" element={<Admin />} />
+          <Route path="/Admin" element={<Admin />} />
           <Route path="/Location" element={<Location />} />
+          <Route path="/DeliveryDashboard" element={<DeliveryDashboard />} />
           <Route path="/food/:id" element={<FoodDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/MyOrder" element={<OrderTracker />} />
           <Route path="/settings" element={<Setting />} />
-          <Route path="/AddNewFood" element={<AddNewFood/>}/>
+          <Route path="/AddNewFood" element={<AddNewFood />} />
         </Routes>
       </BrowserRouter>
     </div>

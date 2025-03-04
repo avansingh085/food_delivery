@@ -1,19 +1,24 @@
 import axios from "axios";
-const axiosInstance = axios.create();
 
-axiosInstance.interceptors.request.use(
+const apiClient = axios.create({
+  baseURL: import.meta.env.BACKEND_URL||"http://localhost:5000",
+  timeout: 10000, 
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Request interceptor
+apiClient.interceptors.request.use(
   (config) => {
-   
-    const token = localStorage.getItem("token");
-    
+    const token = localStorage.getItem("BeksToken");
     if (token) {
-      
-      config.headers["Authorization"] = token;
+      config.headers["Authorization"] = `${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
-export default axiosInstance;
+
+
+export default apiClient;

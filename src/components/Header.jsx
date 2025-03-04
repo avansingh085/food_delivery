@@ -7,6 +7,7 @@ const Header=()=>{
      
      const dispatch=useDispatch();
      const deliveryLocation=useSelector((state)=>state?.Data?.deliveryLocation)||{}
+     console.log(deliveryLocation)
      function saveUserLocationToLocalStorage() {
        
         if (!navigator.geolocation) {
@@ -30,7 +31,7 @@ const Header=()=>{
       useEffect(()=>{
         saveUserLocationToLocalStorage();
       },[])
-     console.log(deliveryLocation)
+    //  console.log(deliveryLocation)
     return(
         <div className=" h-16 w-screen bg-white grid grid-cols-2 fixed  z-50 items-center">
         <div className=" h-16 w-screen bg-white grid grid-cols-2 fixed  items-center justify-center shadow-md ">

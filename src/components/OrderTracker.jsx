@@ -21,7 +21,7 @@ const OrderTracker = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axiosInstance.get(`${url}/getOrder`);
+        const response = await axiosInstance.get(`/getOrder`);
         if (response.data.success && response.data.orders.length > 0) {
           setOrders(response.data.orders);
         }

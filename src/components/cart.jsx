@@ -5,8 +5,6 @@ import { FaTrashAlt, FaArrowLeft } from "react-icons/fa";
 import { setCart } from "../redux/globSlice";
 import axiosInstance from "../utils/axiosInstance";
 
-const url = "http://localhost:5000";
-
 const CartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,7 +19,8 @@ const CartPage = () => {
   // Fetch cart data
   const fetchCartData = useCallback(async () => {
     try {
-      const res = await axiosInstance.get(`${url}/getCart`);
+      const res = await axiosInstance.get(`/getCart`);
+      console.log(res.data.cart,"llll")
       if (res.data.success) {
         dispatch(setCart(res.data.cart));
       }
@@ -56,18 +55,18 @@ const CartPage = () => {
     setTotalPrice(total.toFixed(2));
   }, [cartItems]);
 
-  // Helper functions to add and remove processing IDs
+
   const addProcessingId = (id) =>
     setProcessingIds((prev) => [...prev, id]);
   const removeProcessingId = (id) =>
     setProcessingIds((prev) => prev.filter((itemId) => itemId !== id));
 
   const updateQuantity = async (id, quantity) => {
-    // Prevent update if already processing for this id or if quantity < 1
+  
     if (quantity < 1 || processingIds.includes(id)) return;
     addProcessingId(id);
     try {
-      await axiosInstance.post(`${url}/updateCart`, { mobile, id, quantity });
+      await axiosInstance.post(`/updateCart`, { mobile, id, quantity });
       await fetchCartData();
     } catch (error) {
       console.error("Error updating quantity:", error);
@@ -81,7 +80,7 @@ const CartPage = () => {
     if (processingIds.includes(id)) return;
     addProcessingId(id);
     try {
-      await axiosInstance.post(`${url}/deleteCart`, { mobile, id });
+      await axiosInstance.post(`/deleteCart`, { mobile, id });
       await fetchCartData();
     } catch (error) {
       console.error("Error deleting item:", error);
@@ -92,7 +91,7 @@ const CartPage = () => {
 
   const updateOrderStatus = async (paymentId) => {
     try {
-      const response = await axiosInstance.post(`${url}/addOrder`, {
+      const response = await axiosInstance.post(`/addOrder`, {
         mobile,
         paymentId,
         cartItems,
