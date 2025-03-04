@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Detect_location from "../detect_location";
 import Craving_food from "../components/Craving_food";
 import New_item from "../New_item";
-import FoodCategories from "../components/food_item";
+import FoodCategories from "../components/FoodMenu";
 import Upload from "../utils/upload_image";
 import SearchComponent from "../components/search_item";
 import Bottom_NaveBar from "../components/bottom_navbar";
