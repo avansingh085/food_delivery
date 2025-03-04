@@ -122,7 +122,7 @@ const Home = () => {
 
   const dispatch = useDispatch();
   const { User, isLogin } = useSelector((state) => state.Data);
-
+console.log(import.meta.env.VITE_BACKEND_URL,"import.meta.env.BACKEND_URL")
   const sendOtp = async () => {
     try {
       if (!/^\+?\d{10,13}$/.test(mobileNumber)) {

@@ -5,3 +5,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
 })
+console.log('VITE_BACKEND_URL from Vite:', process.env.VITE_BACKEND_URL);
+
+export const data= defineConfig({
+  define: {
+    'process.env': process.env
+  }
+});

@@ -14,31 +14,28 @@ const ReviewSection = ({ reviews }) => {
         {reviews?.length > 0 ? (
           reviews.map((review, index) => (
             <div key={index} className="pb-6 border-b last:border-0">
-              {/* Username */}
+             
               <h4 className="font-semibold">
                 {review.username || "Anonymous"}
               </h4>
 
-              {/* Star Ratings */}
               <div className="flex items-center gap-1 text-orange-400">
                 {[...Array(review.rating)].map((_, i) => (
                   <FaStar key={i} className="text-sm" />
                 ))}
               </div>
 
-              {/* Review Comment */}
               <p className="text-gray-600">{review.comment}</p>
 
-              {/* Review Images Grid */}
               {review.photos?.length > 0 && (
                 <div className="flex gap-2 mt-3">
                   {review.photos.map((photo, i) => (
                     <img
                       key={i}
-                      src={`http://localhost:5000/${photo}`}
+                      src={`https://fooddeliverybackend-7a1h.onrender.com/${photo}`}
                       alt={`Review ${index} - ${i}`}
                       className="w-24 h-24 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform"
-                      onClick={() => setSelectedImage(`http://localhost:5000/${photo}`)}
+                      onClick={() => setSelectedImage(`https://fooddeliverybackend-7a1h.onrender.com/${photo}`)}
                     />
                   ))}
                 </div>
@@ -50,7 +47,7 @@ const ReviewSection = ({ reviews }) => {
         )}
       </div>
 
-      {/* Image Popup */}
+    
       {selectedImage && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center">
           <div className="relative">
