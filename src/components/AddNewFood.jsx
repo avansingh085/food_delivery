@@ -449,7 +449,7 @@ const FoodManagement = () => {
   return (
     <div className="min-h-screen bg-white text-white p-6">
       <div className="max-w-6xl mx-auto">
-        {/* Search Header */}
+       
         <div className="flex flex-col md:flex-row justify-between mb-8 gap-4">
           <h1 className="text-3xl font-bold">Food Management</h1>
           <div className="relative flex-1 max-w-2xl">
@@ -488,12 +488,11 @@ const FoodManagement = () => {
           </div>
         </div>
 
-        {/* Product Form */}
         <form onSubmit={handleSubmit} className="mb-8 bg-gray-800 p-6 rounded-xl space-y-6">
           <h2 className="text-2xl font-bold">{isEditing ? 'Edit Product' : 'Add New Product'}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left Column */}
+          
             <div className="space-y-4">
               <div>
                 <label className="block mb-2">Product Name *</label>
@@ -557,7 +556,6 @@ const FoodManagement = () => {
               </div>
             </div>
 
-            {/* Right Column */}
             <div className="space-y-4">
               <div>
                 <label className="block mb-2">Image URLs</label>

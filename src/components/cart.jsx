@@ -13,10 +13,9 @@ const CartPage = () => {
 
   const [totalPrice, setTotalPrice] = useState(0);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
-  // Instead of one global isProcessing, we track item-specific processing IDs.
+  
   const [processingIds, setProcessingIds] = useState([]);
 
-  // Fetch cart data
   const fetchCartData = useCallback(async () => {
     try {
       const res = await axiosInstance.get(`/getCart`);
@@ -76,7 +75,7 @@ const CartPage = () => {
   };
 
   const deleteCartItem = async (id) => {
-    // Prevent duplicate deletion calls for the same item
+  
     if (processingIds.includes(id)) return;
     addProcessingId(id);
     try {
@@ -151,7 +150,7 @@ const CartPage = () => {
         {cartItems.length > 0 && (
           <button
             onClick={handlePayment}
-            // Disable payment if any operation is in progress
+           
             disabled={processingIds.length > 0}
             className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition"
           >

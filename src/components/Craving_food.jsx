@@ -39,7 +39,7 @@ function CravingFood() {
       </h2>
       
       <div className="relative group">
-        {/* Navigation Buttons */}
+      
         <button
           onClick={() => scroll('left')}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/90 hover:bg-gray-50 rounded-full shadow-lg hidden md:flex items-center justify-center transition-all duration-300 border border-gray-200"
@@ -58,7 +58,6 @@ function CravingFood() {
           </svg>
         </button>
 
-        {/* Scroll Container */}
         <div
           ref={scrollRef}
           className="flex overflow-x-auto snap-x snap-mandatory space-x-4
