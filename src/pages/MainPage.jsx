@@ -5,7 +5,6 @@ import Home from './Home';
 import FoodDetailPage from './ItemExplo';
 import CartPage from '../components/cart';
 import OrderTracker from '../components/OrderTracker';
-import Setting from './Setting';
 import { setLogin, setUser, setCart } from '../redux/globSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../utils/axiosInstance';
@@ -13,7 +12,7 @@ import Location from '../components/location';
 import Admin from './Admin';
 import AddNewFood from '../components/AddNewFood';
 import DeliveryDashboard from './DeliveryDashboard';
-
+import Settings from './setting';
 function Main_Page() {
   const dispatch = useDispatch();
   const { isLogin, User } = useSelector((state) => state.Data);
@@ -65,7 +64,7 @@ function Main_Page() {
           <Route path="/food/:id" element={<FoodDetailPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/MyOrder" element={<OrderTracker />} />
-          <Route path="/settings" element={<Setting />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/AddNewFood" element={<AddNewFood />} />
         </Routes>
       </BrowserRouter>
