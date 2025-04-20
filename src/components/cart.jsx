@@ -13,13 +13,11 @@ const CartPage = () => {
 
   const [totalPrice, setTotalPrice] = useState(0);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
-  
   const [processingIds, setProcessingIds] = useState([]);
 
   const fetchCartData = useCallback(async () => {
     try {
       const res = await axiosInstance.get(`/getCart`);
-      console.log(res.data.cart,"llll")
       if (res.data.success) {
         dispatch(setCart(res.data.cart));
       }
@@ -54,37 +52,35 @@ const CartPage = () => {
     setTotalPrice(total.toFixed(2));
   }, [cartItems]);
 
-
   const addProcessingId = (id) =>
     setProcessingIds((prev) => [...prev, id]);
+
   const removeProcessingId = (id) =>
     setProcessingIds((prev) => prev.filter((itemId) => itemId !== id));
 
-  const updateQuantity = async (id, quantity) => {
-  
-    if (quantity < 1 || processingIds.includes(id)) return;
-    addProcessingId(id);
+  const updateQuantity = async (_id, quantity) => {
+    if (quantity < 1 || processingIds.includes(_id)) return;
+    addProcessingId(_id);
     try {
-      await axiosInstance.post(`/updateCart`, { mobile, id, quantity });
+      await axiosInstance.post(`/updateCart`, { mobile, id: _id, quantity });
       await fetchCartData();
     } catch (error) {
       console.error("Error updating quantity:", error);
     } finally {
-      removeProcessingId(id);
+      removeProcessingId(_id);
     }
   };
 
-  const deleteCartItem = async (id) => {
-  
-    if (processingIds.includes(id)) return;
-    addProcessingId(id);
+  const deleteCartItem = async (_id) => {
+    if (processingIds.includes(_id)) return;
+    addProcessingId(_id);
     try {
-      await axiosInstance.post(`/deleteCart`, { mobile, id });
+      await axiosInstance.post(`/deleteCart`, { mobile, id: _id });
       await fetchCartData();
     } catch (error) {
       console.error("Error deleting item:", error);
     } finally {
-      removeProcessingId(id);
+      removeProcessingId(_id);
     }
   };
 
@@ -97,7 +93,7 @@ const CartPage = () => {
         amount: totalPrice,
       });
       if (response.data.success) {
-        dispatch(setCart([]))
+        dispatch(setCart([]));
         navigate("/MyOrder");
       } else {
         console.error("Error updating order status:", response.data.message);
@@ -115,16 +111,16 @@ const CartPage = () => {
 
     const options = {
       key: "rzp_test_hI0niYSDJZ36yP",
-      amount: (parseInt(totalPrice)* 100),
+      amount: Math.round(parseFloat(totalPrice) * 100),
       currency: "INR",
       name: "Cart Payment",
       description: "Complete your purchase",
       handler: async (response) => {
-        if (!response.razorpay_payment_id) {
+        if (response.razorpay_payment_id) {
+          await updateOrderStatus(response.razorpay_payment_id);
+        } else {
           console.error("Payment failed");
-          return;
         }
-        await updateOrderStatus(response.razorpay_payment_id);
       },
       prefill: {
         name: "John Doe",
@@ -150,7 +146,6 @@ const CartPage = () => {
         {cartItems.length > 0 && (
           <button
             onClick={handlePayment}
-           
             disabled={processingIds.length > 0}
             className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition"
           >
@@ -158,63 +153,65 @@ const CartPage = () => {
           </button>
         )}
       </div>
+
       <div className="text-center space-y-4 mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Your Cart</h1>
       </div>
+
       <div className="space-y-4">
         {cartItems.length > 0 ? (
           cartItems.map((item) => (
-            <Link to={`/food/${item._id}`}> <div
-              key={item.id}
+            <div
+              key={item._id}
               className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md"
             >
-              <img
-                src={item.imageUrls[0] || "/default-image.jpg"}
-                alt={item.title}
-                className="w-24 h-24 object-cover rounded-lg"
-              />
-              <div>
-                <h2 className="text-xl font-semibold">{item.title}</h2>
-                <p>Price: ₹{item.price}</p>
-                <div className="flex items-center mt-2">
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    disabled={processingIds.includes(item.id)}
-                    className="bg-gray-300 px-3 py-1 rounded-l-md"
-                  >
-                    -
-                  </button>
-                  <input
-                    type="number"
-                    value={item.quantity}
-                    readOnly
-                    className="w-12 text-center border"
-                  />
-                  <button
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    disabled={processingIds.includes(item.id)}
-                    className="bg-gray-300 px-3 py-1 rounded-r-md"
-                  >
-                    +
-                  </button>
+              <Link to={`/food/${item._id}`} className="flex items-center gap-4 flex-1">
+                <img
+                  src={item.imageUrls[0] || "/default-image.jpg"}
+                  alt={item.title}
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+                <div>
+                  <h2 className="text-xl font-semibold">{item.title}</h2>
+                  <p>Price: ₹{item.price}</p>
+                  <div className="flex items-center mt-2">
+                    <button
+                      onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                      disabled={processingIds.includes(item._id)}
+                      className="bg-gray-300 px-3 py-1 rounded-l-md"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      readOnly
+                      className="w-12 text-center border"
+                    />
+                    <button
+                      onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                      disabled={processingIds.includes(item._id)}
+                      className="bg-gray-300 px-3 py-1 rounded-r-md"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </Link>
               <button
-                onClick={() => deleteCartItem(item.id)}
-                disabled={processingIds.includes(item.id)}
-                className="text-red-500 hover:text-red-600"
+                onClick={() => deleteCartItem(item._id)}
+                disabled={processingIds.includes(item._id)}
+                className="text-red-500 hover:text-red-600 ml-4"
               >
                 <FaTrashAlt size={20} />
               </button>
             </div>
-            </Link>
           ))
         ) : (
           <h1 className="text-center text-xl text-gray-600">Your cart is empty!</h1>
         )}
       </div>
     </div>
-   
   );
 };
 

@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { setCart } from "../redux/globSlice";
 import axiosInstance from "../utils/axiosInstance";
 
 const ITEMS_PER_PAGE = 20;
-
+let val;
 const FoodMenu = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [menuData, setMenuData] = useState([]);
@@ -14,8 +14,9 @@ const FoodMenu = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const { User } = useSelector((state) => state.Data);
+  const { User,cart } = useSelector((state) => state.Data);
   const { deliveryLocation } = useSelector((state) => state.Data);
+  
   const dispatch = useDispatch();
 
   const [customization, setCustomization] = useState({
@@ -36,33 +37,36 @@ const FoodMenu = () => {
     }
   };
 
-  const fetchMenuData = useCallback(async () => {
-    setIsLoading(true);
-    for(let i=0;i<10;i++)
-    {
-    try {
-      const response = await axiosInstance.get(`/getMenu`, {
-        params: { page: currentPage, limit: ITEMS_PER_PAGE }
-      });
-      if(response.data.success)
-      {
-      setMenuData(prev => [...prev, ...response.data.items]);
-      setTotalPages(response.data.totalPages);
-      setError(null);
-      setIsLoading(false);
-      }
-    } catch (err) {
-      if(i==9)
-      setError("Failed to load menu. Please try again later.");
-    } finally {
-      
-    }
-  }
-  }, [currentPage]);
+
+  const itemIdsInCart = useMemo(() => {
+    return cart?.map((c) => c.id._id);
+  }, [cart]);
+  
+
 
   useEffect(() => {
+    const fetchMenuData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axiosInstance.get(`/getMenu`, {
+          params: { page: currentPage, limit: ITEMS_PER_PAGE },
+        });
+  
+        if (response.data.success) {
+          setMenuData(prev => [...prev, ...response.data.items]);
+          setTotalPages(response.data.totalPages);
+          setError(null);
+        }
+      } catch (err) {
+        setError("Failed to load menu. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
     fetchMenuData();
-  }, [fetchMenuData]);
+  }, [currentPage]);
+  
 
   const categories = menuData.reduce((acc, item) => {
     const category = acc.find(cat => cat.name === item.category);
@@ -74,7 +78,8 @@ const FoodMenu = () => {
     return acc;
   }, []);
 
-  const handleAddToCart = async () => {
+
+  const handleAddToCart = async (selectedItem) => {
     if (!selectedItem || isAddingToCart) return;
 
     setIsAddingToCart(true);
@@ -102,6 +107,7 @@ const FoodMenu = () => {
     }
   };
 
+
   return (
     <div className="bg-gray-50 min-h-screen p-2">
       <h1 className="text-xl font-bold text-gray-900 text-center mb-3 px-2">
@@ -121,19 +127,20 @@ const FoodMenu = () => {
               {category.name}
             </h2>
             <div className="grid md:grid-cols-3 gap-2 ">
-              {category.items.map((item) => (
+              {category.items.map((item,id) => (
                 <div
-                  key={item._id}
+                  key={""+id+item._id}
                   className="bg-white rounded-lg  overflow-hidden  mt-4 shadow-2xl "
                 >
-                  <Link
-                    to={`/food/${item._id}`}
-                    className="block relative aspect-square overflow-hidden"
-                  >
+                 
                     {item.imageUrls?.[0] ? (
-                      //on this image how bottom left tilte and right show cart add button
+                     
                       <div className="relative h-full w-full">
-  {/* Background image */}
+   <Link
+                    to={`/food/${item._id}`}
+                    className="block relative aspect-square overflow-hidden z-0"
+                    
+                  >
   <img
     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa54iX9k340L3EFcmhCa8VbhBTtJJYcbLMHQ&s"
     // src={item.imageUrls[0]}
@@ -141,29 +148,32 @@ const FoodMenu = () => {
     className="w-full h-full object-cover"
     loading="lazy"
   />
-
-  {/* Gradient overlay covering bottom 50% */}
- 
-
-  {/* Text and controls on top of gradient */}
+</Link>
   <div className="absolute bottom-0 left-0 z-20  text-white text-lg p-1 w-full bg-gradient-to-t from-gray-950 to-transparent">
-      <button className={"float-right mb-20  w-50 px-2 bg-slate-700 rounded-s-lg border-[1.5px] "}>Customise {'>'}</button>
+      <button className={"float-right mb-20  w-50 px-2 bg-slate-700 rounded-s-lg border-[1.5px] z-50 "} onClick={()=>{setSelectedItem(item)}}>Customise {'>'}</button>
       <div className="flex">
       <div className="mt-3 ml-2 mr-2 w-5 h-5 border-2 border-green-600 bg-white flex items-center justify-center rounded-sm">
   <div className="w-2 h-2 bg-green-600 rounded-full"></div>
 </div>
-{/* font style  */}
 
     <div className="font-bold  text-white  text-2xl p-1" >{item.name}</div>
 </div>
     <div >{item.description}</div>
 
-    <div className="w-full h-20 grid grid-cols-2 border-t-2 items-center ">
-      <div className="text-3xl m-4 font-semibold">{item.price}Rs</div>
-      <button className="h-16 w-40 mx-6 font-extrabold bg-red-600 text-white text-3xl p-1 rounded-lg">
-        Add +
-      </button>
-    </div>
+    <div className="w-full h-20 grid grid-cols-2 border-t-2 items-center">
+  <div className="text-3xl m-4 font-semibold">{item.price}Rs</div>
+
+  <div className="flex justify-end pr-4">
+   
+    <button
+      className={`h-16 w-fit font-extrabold ${ itemIdsInCart?.includes(item._id) ?'bg-white text-black':'bg-red-600 text-white' }  text-3xl px-4 rounded-lg`}
+      onClick={(e) => handleAddToCart(item, e)}
+    >
+      Add +
+    </button>
+  </div>
+</div>
+
   
   </div>
 </div>
@@ -179,7 +189,7 @@ const FoodMenu = () => {
                         {item.offer}% Off
                       </div>
                     )}
-                  </Link>
+                 
 
                   
                 </div>
@@ -188,12 +198,12 @@ const FoodMenu = () => {
           </section>
         ))}
 
-        {currentPage < totalPages && (
-          <div className="flex justify-center mb-4">
+        { (
+          <div className="flex justify-center mb-20">
             <button
               onClick={() => setCurrentPage(prev => prev + 1)}
               disabled={isLoading}
-              className="px-4 py-1.5 bg-indigo-600 text-white text-xs rounded-lg disabled:opacity-50"
+              className="px-4 h-28 font-extrabold text-4xl w-60 py-1.5 mt-5 bg-black text-white  rounded-lg disabled:opacity-50"
             >
               {isLoading ? 'Loading...' : 'Load More'}
             </button>

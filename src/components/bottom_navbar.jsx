@@ -10,7 +10,7 @@ const Bottom_NavBar = () => {
     setCartCount(cart.length);
    },[cart])
   return (
-    <div className="flex flex-col min-h-fit bg-gray-100">
+    <div className="flex flex-col min-h-fit bg-gray-100 z-50">
      
 
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200">
