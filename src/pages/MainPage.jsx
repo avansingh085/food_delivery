@@ -20,8 +20,7 @@ function Main_Page() {
   const [loading, setLoading] = useState(true); // Loading state
 
   const fetchProfile = async () => {
-    for(let i=0;i<20;i++)
-      {
+  
     try {
      
       const res = await axiosInstance.get(`/profile`);
@@ -32,7 +31,7 @@ function Main_Page() {
         dispatch(setLogin(true));
         dispatch(setCart(cartData.data.cart));
         dispatch(setUser(res.data.User));
-        setLoading(false);
+       
         return 0;
         
       } else {
@@ -42,9 +41,9 @@ function Main_Page() {
       //console.error('Error fetching profile:', error);
       dispatch(setLogin(false));
     } finally {
-       // Stop loading once fetching is done
+      setLoading(false);
     }
-  }
+  
   };
 
   useEffect(() => {
