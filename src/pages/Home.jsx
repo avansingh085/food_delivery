@@ -4,7 +4,6 @@ import Detect_location from "../detect_location";
 import Craving_food from "../components/Craving_food";
 import New_item from "../New_item";
 import FoodCategories from "../components/FoodMenu";
-import Upload from "../utils/upload_image";
 import SearchComponent from "../components/search_item";
 import Bottom_NaveBar from "../components/bottom_navbar";
 import { setLogin, setUser } from "../redux/globSlice";
@@ -119,10 +118,9 @@ const Home = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [resendTimer, setResendTimer] = useState(30);
   const [message, setMessage] = useState("");
-
   const dispatch = useDispatch();
   const { User, isLogin } = useSelector((state) => state.Data);
-console.log(import.meta.env.VITE_BACKEND_URL,"import.meta.env.BACKEND_URL")
+  console.log(User)
   const sendOtp = async () => {
     try {
       if (!/^\+?\d{10,13}$/.test(mobileNumber)) {
@@ -142,7 +140,7 @@ console.log(import.meta.env.VITE_BACKEND_URL,"import.meta.env.BACKEND_URL")
     try {
       const enteredOtp = otp.join("");
       const response = await axiosInstance.post(`/verify-otp`, { phone: mobileNumber, otp: enteredOtp });
-      console.log(response,"AVAN SINGH__________________________________________")
+    
       if (response.data.success) {
         const res = await axiosInstance.post(`/login`, { mobile: mobileNumber });
         dispatch(setLogin(true));
@@ -155,7 +153,7 @@ console.log(import.meta.env.VITE_BACKEND_URL,"import.meta.env.BACKEND_URL")
         setMessage(response.data.message || "Invalid OTP");
       }
     } catch (error) {
-      console.log(error,"LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
+     
       setMessage(error || "Invalid OTP");
     }
   };

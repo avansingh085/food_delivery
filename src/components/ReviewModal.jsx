@@ -63,7 +63,7 @@ const ReviewModal = ({ productId,orderId, onClose }) => {
       formData.append("productId", productId);
       formData.append("orderId",orderId)
       capturedImages.forEach((image, index) => {
-        formData.append("capturedImages", image); // Key should match backend `multer.array("capturedImages")`
+        formData.append("capturedImages", image); 
       });
       console.log(formData)
       const response = await axiosInstance.post(`/addReview`, formData, {

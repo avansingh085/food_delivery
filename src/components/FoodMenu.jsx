@@ -68,15 +68,15 @@ const FoodMenu = () => {
 
   const handleAddToCart = async () => {
     if (!selectedItem || isAddingToCart) return;
-    
+
     setIsAddingToCart(true);
     try {
       await axiosInstance.post(`/addCart`, {
         mobile: User?.mobile,
-        item: { 
+        item: {
           ...selectedItem,
           customizationOptions: customization,
-          deliveryLocation 
+          deliveryLocation
         }
       });
       await fetchCartData();
@@ -106,29 +106,61 @@ const FoodMenu = () => {
         </div>
       )}
 
-      <div className="mx-2">
+      <div className="mx-2" loading="lazy">
         {categories.map((category) => (
-          <section key={category.name} className="mb-4">
+          <section key={category.name} className="mt-3">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">
               {category.name}
             </h2>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid md:grid-cols-3 gap-2 ">
               {category.items.map((item) => (
                 <div
                   key={item._id}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden"
+                  className="bg-white rounded-lg  overflow-hidden  mt-4 shadow-2xl "
                 >
-                  <Link 
-                    to={`/food/${item._id}`} 
+                  <Link
+                    to={`/food/${item._id}`}
                     className="block relative aspect-square overflow-hidden"
                   >
                     {item.imageUrls?.[0] ? (
-                      <img
-                        src={item.imageUrls[0]}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
+                      //on this image how bottom left tilte and right show cart add button
+                      <div className="relative h-full w-full">
+  {/* Background image */}
+  <img
+    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa54iX9k340L3EFcmhCa8VbhBTtJJYcbLMHQ&s"
+    // src={item.imageUrls[0]}
+    alt={item.name}
+    className="w-full h-full object-cover"
+    loading="lazy"
+  />
+
+  {/* Gradient overlay covering bottom 50% */}
+ 
+
+  {/* Text and controls on top of gradient */}
+  <div className="absolute bottom-0 left-0 z-20  text-white text-lg p-1 w-full bg-gradient-to-t from-gray-950 to-transparent">
+      <button className={"float-right mb-20  w-50 px-2 bg-slate-700 rounded-s-lg border-[1.5px] "}>Customise {'>'}</button>
+      <div className="flex">
+      <div className="mt-3 ml-2 mr-2 w-5 h-5 border-2 border-green-600 bg-white flex items-center justify-center rounded-sm">
+  <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+</div>
+{/* font style  */}
+
+    <div className="font-bold  text-white  text-2xl p-1" >{item.name}</div>
+</div>
+    <div >{item.description}</div>
+
+    <div className="w-full h-20 grid grid-cols-2 border-t-2 items-center ">
+      <div className="text-3xl m-4 font-semibold">{item.price}Rs</div>
+      <button className="h-16 w-40 mx-6 font-extrabold bg-red-600 text-white text-3xl p-1 rounded-lg">
+        Add +
+      </button>
+    </div>
+  
+  </div>
+</div>
+
+                    
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                         <span className="text-gray-400 text-xs">No image</span>
@@ -141,39 +173,7 @@ const FoodMenu = () => {
                     )}
                   </Link>
 
-                  <div className="p-1.5">
-                    <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-[11px] font-medium text-gray-900 truncate">
-                        {item.name}
-                      </h3>
-                      <span className="text-[11px] font-bold text-gray-900">
-                        ₹{item.price}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-[2px]">
-                        {[...Array(5)].map((_, i) => (
-                          <span
-                            key={i}
-                            className={`text-[10px] ${
-                              i < (item.rating?.value || 0)
-                                ? 'text-yellow-400'
-                                : 'text-gray-300'
-                            }`}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                      <button
-                        onClick={() => setSelectedItem(item)}
-                        className="px-1 py-0.5 bg-indigo-600 text-white text-[10px] font-medium rounded-md"
-                      >
-                        Customize
-                      </button>
-                    </div>
-                  </div>
+                  
                 </div>
               ))}
             </div>
@@ -198,7 +198,7 @@ const FoodMenu = () => {
           <div className="bg-white rounded-lg w-full max-w-xs max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center p-2 border-b">
               <h3 className="text-sm font-medium">Customize {selectedItem.name}</h3>
-              <button 
+              <button
                 onClick={() => setSelectedItem(null)}
                 className="text-gray-500 text-lg"
               >
@@ -233,9 +233,9 @@ const FoodMenu = () => {
                     <label className="block text-xs font-medium">Crust Type</label>
                     <select
                       value={customization.crust}
-                      onChange={(e) => setCustomization(prev => ({ 
-                        ...prev, 
-                        crust: e.target.value 
+                      onChange={(e) => setCustomization(prev => ({
+                        ...prev,
+                        crust: e.target.value
                       }))}
                       className="w-full p-1 text-xs border rounded"
                     >
@@ -267,11 +267,10 @@ const FoodMenu = () => {
                     <button
                       key={size}
                       onClick={() => setCustomization(prev => ({ ...prev, size }))}
-                      className={`p-1 text-xs rounded ${
-                        customization.size === size
+                      className={`p-1 text-xs rounded ${customization.size === size
                           ? 'bg-indigo-600 text-white'
                           : 'bg-gray-100 hover:bg-gray-200'
-                      }`}
+                        }`}
                     >
                       {size}
                     </button>
