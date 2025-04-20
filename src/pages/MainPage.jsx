@@ -32,7 +32,7 @@ function Main_Page() {
         dispatch(setLogin(true));
         dispatch(setCart(cartData.data.cart));
         dispatch(setUser(res.data.User));
-        dispatch(setLogin(false));
+        setLoading(false);
         return 0;
         
       } else {
@@ -42,7 +42,7 @@ function Main_Page() {
       //console.error('Error fetching profile:', error);
       dispatch(setLogin(false));
     } finally {
-      setLoading(false); // Stop loading once fetching is done
+       // Stop loading once fetching is done
     }
   }
   };

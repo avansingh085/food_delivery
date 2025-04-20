@@ -1,7 +1,7 @@
 import axios from "axios";
 //
 const apiClient = axios.create({
-  baseURL: "http://localhost:5000"||"https://fooddeliverybackend-7a1h.onrender.com",
+  baseURL: "https://fooddeliverybackend-7a1h.onrender.com",
   timeout: 10000, 
   headers: {
     "Content-Type": "application/json",

@@ -38,18 +38,26 @@ const FoodMenu = () => {
 
   const fetchMenuData = useCallback(async () => {
     setIsLoading(true);
+    for(let i=0;i<10;i++)
+    {
     try {
       const response = await axiosInstance.get(`/getMenu`, {
         params: { page: currentPage, limit: ITEMS_PER_PAGE }
       });
+      if(response.data.success)
+      {
       setMenuData(prev => [...prev, ...response.data.items]);
       setTotalPages(response.data.totalPages);
       setError(null);
+      setIsLoading(false);
+      }
     } catch (err) {
+      if(i==9)
       setError("Failed to load menu. Please try again later.");
     } finally {
-      setIsLoading(false);
+      
     }
+  }
   }, [currentPage]);
 
   useEffect(() => {
