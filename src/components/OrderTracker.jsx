@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance.jsx";
 import ReviewModal from "./ReviewModal.jsx";
 import LiveLocationModal from "./location.jsx";
-
+import OrderProgress from "./OrderProgress.jsx";
 const OrderTracker = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +77,7 @@ const OrderTracker = () => {
                         </p>
                       </div>
                       <div className="mt-2 sm:mt-0 text-right">
-                        <p className="text-lg font-bold text-blue-600">
+                        {/* <p className="text-lg font-bold text-blue-600">
                           ₹{order.price}
                         </p>
                         <p
@@ -88,17 +88,17 @@ const OrderTracker = () => {
                           }`}
                         >
                           {order.currentStatus}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
 
                     {expandedOrderId === order._id && (
                       <div className="mt-4 space-y-3">
-                        <img
+                        {/* <img
                           src={order.id.imageUrls[0]}
                           alt={order.id.name}
                           className="w-full h-48 object-cover rounded-lg"
-                        />
+                        /> */}
                         <p className="text-gray-700">
                           {order.id.description}
                         </p>
@@ -120,7 +120,7 @@ const OrderTracker = () => {
                             </p>
                           </div>
                         </div>
-
+                          <OrderProgress/>
                         <div className="flex flex-col sm:flex-row gap-3 mt-4">
                           <button
                             onClick={(e) => {

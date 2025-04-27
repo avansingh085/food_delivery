@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { setCart } from "../redux/globSlice";
 import axiosInstance from "../utils/axiosInstance";
+import FoodDetailPage from "../pages/ItemExplo";
 
 const ITEMS_PER_PAGE = 20;
 let val;
@@ -16,7 +17,7 @@ const FoodMenu = () => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const { User,cart } = useSelector((state) => state.Data);
   const { deliveryLocation } = useSelector((state) => state.Data);
-  
+  const [itemId,setItemId]=useState();
   const dispatch = useDispatch();
 
   const [customization, setCustomization] = useState({
@@ -210,7 +211,9 @@ const FoodMenu = () => {
           </div>
         )}
       </div>
-
+{
+  itemId&&<FoodDetailPage itemId={itemId} setItemId={setItemId}/>
+}
       {selectedItem && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 z-50">
           <div className="bg-white rounded-lg w-full max-w-xs max-h-[90vh] overflow-y-auto">

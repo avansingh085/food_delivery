@@ -13,8 +13,8 @@ import {
   FaTag
 } from 'react-icons/fa';
 
-const FoodDetailPage = () => {
-  const { id } = useParams();
+const FoodDetailPage = ({itemId,setItemId}) => {
+  const id = useParams()?.id||itemId;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.Data);
@@ -57,7 +57,7 @@ const FoodDetailPage = () => {
 
   const calculatePrice = (basePrice) => {
     let price = basePrice;
-    const sizePrices = { Small: -50, Medium: 0, Large: 100 };
+    const sizePrices = { Small: 0, Medium: 10, Large: 30 };
     const crustPrices = { Classic: 0, 'Thin Crust': 30, 'Stuffed Crust': 80 };
     
     price += sizePrices[customization.size];
