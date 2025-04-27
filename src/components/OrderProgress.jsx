@@ -15,7 +15,7 @@ const OrdersProgress = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-20 w-5/6 bg-white rounded-lg shadow-sm">
+    <div className="flex items-center justify-center h-20 w-fit bg-white rounded-lg shadow-sm">
       <div className="flex w-fit  text-center">
          <div className="">
          <div className="h-4 w-4 rounded-full m-2 bg-green-500">
