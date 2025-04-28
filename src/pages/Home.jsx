@@ -10,6 +10,7 @@ import { setLogin, setUser } from "../redux/globSlice";
 import axios, { Axios } from "axios";
 import axiosInstance from "../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
+import BeksPizza from "../components/BeksPizza";
 
 const LoginPopup = ({
   mobileNumber,
@@ -195,8 +196,10 @@ const Home = () => {
 
       <div className="flex-1 pt-24">
         <SearchComponent />
-        <Craving_food />
-        <New_item />
+        {/* <Craving_food />
+        <New_item /> */}
+        
+         <BeksPizza/>
         <FoodCategories />
        
       </div>

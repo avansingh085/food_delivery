@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { setCart } from "../redux/globSlice";
 import axiosInstance from "../utils/axiosInstance";
 import FoodDetailPage from "../pages/ItemExplo";
+import axios from "axios";
+import BeksPizzaMenu from "./BeksPizzaMenu";
 
 const ITEMS_PER_PAGE = 20;
 let val;
@@ -110,16 +112,18 @@ const FoodMenu = () => {
 
 
   return (
-    <div className="bg-gray-50 min-h-screen p-2">
-      <h1 className="text-xl font-bold text-gray-900 text-center mb-3 px-2">
+    <div className="bg-gray-50 min-h-screen p-2 grid items-start justify-center">
+      {/* <h1 className="text-xl font-bold text-gray-900 text-center mb-3 px-2">
         Explore Our Menu
-      </h1>
+      </h1> */}
 
       {error && (
         <div className="mx-2 mb-2 p-2 bg-red-50 text-red-700 rounded text-sm">
           {error}
         </div>
       )}
+
+    <BeksPizzaMenu/>
 
       <div className="mx-2" loading="lazy">
         {categories.map((category) => (
@@ -204,7 +208,7 @@ const FoodMenu = () => {
             <button
               onClick={() => setCurrentPage(prev => prev + 1)}
               disabled={isLoading}
-              className="px-4 h-28 font-extrabold text-4xl w-60 py-1.5 mt-5 bg-black text-white  rounded-lg disabled:opacity-50"
+              className="px-4 h-16 font-extrabold text-2xl w-60 py-1.5 mt-5 bg-black text-white  rounded-lg disabled:opacity-50"
             >
               {isLoading ? 'Loading...' : 'Load More'}
             </button>

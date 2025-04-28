@@ -17,8 +17,8 @@ const FoodDetailPage = ({itemId,setItemId}) => {
   const id = useParams()?.id||itemId;
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.Data);
-  console.log(user)
+  const user = useSelector((state) => state.Data?.User);
+  
   const { deliveryLocation } = useSelector((state) => state.Data);
 
   const [foodItem, setFoodItem] = useState(null);
