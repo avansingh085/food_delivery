@@ -168,7 +168,8 @@ const FoodDetailPage = ({itemId,setItemId}) => {
       
           <div className="relative aspect-square bg-gray-100 rounded-3xl overflow-hidden shadow-xl">
             <img 
-              src={foodItem.imageUrls?.[0] || '/placeholder-food.jpg'} 
+            src="https://assets.box8.co.in/rectangle-19x10/xhdpi/product/8074"
+              // src={foodItem.imageUrls?.[0] || '/placeholder-food.jpg'} 
               alt={foodItem.name}
               className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-zoom-in"
               onClick={() => setSelectedImage(foodItem.imageUrls?.[0])}

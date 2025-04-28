@@ -11,6 +11,7 @@ const OrderTracker = () => {
   const [reviewOrder, setReviewOrder] = useState(null);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [trackingOrder, setTrackingOrder] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,19 +55,21 @@ const OrderTracker = () => {
           <p className="text-center">Loading orders...</p>
         ) : (
           <div className="space-y-4">
-            {orders.map((order) => (
-              <div
+            {orders.map((order) => {
+
+              return (<div
                 key={order._id}
                 className="bg-white p-4 rounded shadow-md transition-all cursor-pointer hover:shadow-lg"
                 onClick={() => handleOrderClick(order._id)}
               >
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <img
-                    src={order.id.imageUrls[0]}
-                    alt={order.id.name}
-                    className="w-full sm:w-32 h-32 object-cover rounded"
-                  />
+
                   <div className="flex-1">
+                    <img
+                      src={order.id.imageUrls[0]}
+                      alt={order.id.name}
+                      className={` ${expandedOrderId === order._id ? 'w-20 h-20 rounded-full float-right' : 'w-full sm:w-32 h-32 object-cover rounded'} `}
+                    />
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center">
                       <div>
                         <h2 className="text-xl font-semibold text-gray-800">
@@ -113,16 +116,22 @@ const OrderTracker = () => {
                               {order.paymentStatus}
                             </p>
                           </div>
+                          <OrderProgress />
                           <div className="sm:col-span-2">
-                            <p className="font-semibold">Delivery Address:</p>
-                            <p className="text-gray-600">
-                              {order.deliveryAddress}
+                            <p className="font-semibold mb-1">Delivery Address:</p>
+                            <p className="text-gray-700">
+                              John Doe<br />
+                              1234 Park Street, Apartment 56B<br />
+                              Near City Center Mall, Sector 21<br />
+                              New Delhi, Delhi - 110075<br />
+                              Phone: +91 9876543210
                             </p>
                           </div>
+
                         </div>
-                          <OrderProgress/>
+
                         <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                          <button
+                          {/* <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setTrackingOrder(order);
@@ -130,7 +139,7 @@ const OrderTracker = () => {
                             className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 w-full sm:w-auto"
                           >
                             Track Delivery
-                          </button>
+                          </button> */}
 
                           {order.currentStatus === "Delivered" && (
                             <button
@@ -149,7 +158,8 @@ const OrderTracker = () => {
                   </div>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         )}
 

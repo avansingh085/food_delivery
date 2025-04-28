@@ -15,38 +15,50 @@ const OrdersProgress = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-20 w-fit bg-white rounded-lg shadow-sm">
-      <div className="flex w-fit  text-center">
-         <div className="">
-         <div className="h-4 w-4 rounded-full m-2 bg-green-500">
-
-</div>
-         <div className="">accept</div>
-        
-          </div>
-         
-          ------------
-          <div className="">
-          <div className="h-4 w-4 rounded-full m-2  bg-green-500 ">
-
-</div>
-         <span className="">accept</span>
-        
-          </div>
-          ------------
-          <div className="">
-          <div className="h-4 w-4 rounded-full m-2 bg-green-500">
-
-</div>
-         <div className="">accept</div>
-          
-          </div>
-          ------------
-          <div className="h-4 w-4 rounded-full m-2 bg-green-500">
-
-</div>
-
+    <div className="flex items-center justify-center h-20 w-full bg-white rounded-lg shadow-sm">
+      <label className="flex  justify-center w-full  text-center">
+      <div class="w-full max-w-4xl mx-auto mt-10">
+  <div class="flex justify-between items-center">
+    
+    <div class="flex flex-col items-center">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center bg-blue-500 text-white">
+        1
       </div>
+      <span class="text-sm mt-2">Booking</span>
+    </div>
+
+    <div class="flex-auto border-t-2 border-blue-500"></div>
+
+    <div class="flex flex-col items-center">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center bg-blue-500 text-white">
+        2
+      </div>
+      <span class="text-sm mt-2">Picked</span>
+    </div>
+
+    <div class="flex-auto border-t-2 border-gray-300"></div>
+
+    <div class="flex flex-col items-center">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-300 text-gray-600">
+        3
+      </div>
+      <span class="text-sm mt-2">Delivered</span>
+    </div>
+
+    <div class="flex-auto border-t-2 border-gray-300"></div>
+
+    <div class="flex flex-col items-center">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-300 text-gray-600">
+        4
+      </div>
+      <span class="text-sm mt-2">Completed</span>
+    </div>
+
+  </div>
+</div>
+
+
+      </label>
     </div>
   );
 };

@@ -135,7 +135,9 @@ const CartPage = () => {
   };
 
   return (
+    <div className="min-h-screen w-screen">
     <div className="max-w-7xl mx-auto p-6 bg-gray-100">
+
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={() => navigate(-1)}
@@ -144,14 +146,24 @@ const CartPage = () => {
           <FaArrowLeft className="mr-2" /> Back
         </button>
         {cartItems.length > 0 && (
-          <button
-            onClick={handlePayment}
-            disabled={processingIds.length > 0}
-            className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition"
-          >
-            Proceed to Payment
-          </button>
-        )}
+  <div className="flex items-center gap-3 mt-4">
+   
+    <input
+      type="text"
+      placeholder="Apply Coupon"
+      className="border border-gray-300 rounded-lg p-3 w-64 focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
+    />
+
+    <button
+      type="button"
+      className="bg-orange-400 text-white font-semibold px-6 py-3 rounded-lg hover:bg-orange-500 transition-all"
+    >
+      Apply
+    </button>
+
+  </div>
+)}
+
       </div>
 
       <div className="text-center space-y-4 mb-6">
@@ -211,7 +223,30 @@ const CartPage = () => {
           <h1 className="text-center text-xl text-gray-600">Your cart is empty!</h1>
         )}
       </div>
-    </div>
+      </div>
+      <div className="h-24 w-screen border-t shadow-2xl fixed bottom-0 left-0 right-0 bg-white px-8 flex items-center justify-between z-50">
+  
+  {/* Total Price */}
+  <div className="text-lg font-bold text-gray-800">
+    Total Price: ₹{totalPrice}
+  </div>
+
+  {/* Payment Button */}
+  <div>
+    {cartItems.length > 0 && (
+      <button
+        onClick={handlePayment}
+        disabled={processingIds.length > 0}
+        className="bg-gradient-to-r from-orange-400 to-pink-500 text-white text-sm font-semibold px-8 py-3 rounded-full hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 disabled:opacity-50"
+      >
+        {processingIds.length > 0 ? 'Processing...' : 'Proceed to Payment'}
+      </button>
+    )}
+  </div>
+
+</div>
+
+       </div>
   );
 };
 

@@ -143,7 +143,7 @@ const FoodMenu = () => {
                     
                   >
   <img
-    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa54iX9k340L3EFcmhCa8VbhBTtJJYcbLMHQ&s"
+    src="https://assets.box8.co.in/rectangle-19x10/xhdpi/product/8074"
     // src={item.imageUrls[0]}
     alt={item.name}
     className="w-full h-full object-cover"
