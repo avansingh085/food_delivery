@@ -9,12 +9,12 @@ const pizzaItems = [
 
 const BeksPizzaMenu = () => {
   return (
-    <div className="w-full grid md:grid-cols-4 grid-cols-2  text-bold text-2xl text-center items-center justify-center ">
+    <div className="w-full  bg-white grid md:grid-cols-4 grid-cols-2  text-bold text-2xl text-center items-center justify-center ">
     
         {pizzaItems.map((item, index) => (
           <div
             key={index}
-            className="ml-10"
+            className="w-full grid items-center justify-center h-full mt-4 mb-4"
           >
             <img
               src="/pizzalogo.jpg"

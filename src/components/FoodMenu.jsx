@@ -121,7 +121,7 @@ const FoodMenu = () => {
 
 
   return (
-    <div className="bg-gray-50 w-screen overflow-hidden min-h-screen p-2 grid items-start justify-center">
+    <div className="bg-slate-200 w-screen overflow-hidden min-h-screen p-2 grid items-start justify-center">
       {/* <h1 className="text-xl font-bold text-gray-900 text-center mb-3 px-2">
         Explore Our Menu
       </h1> */}
@@ -157,7 +157,7 @@ const FoodMenu = () => {
              {category.items.map((item) => (
                <div
                  key={item._id}
-                 className="bg-white ml-3  mb-5 h-80 w-80 sm:w-64 md:w-72 lg:w-80 flex-shrink-0 rounded-lg overflow-hidden mt-4 shadow-xl snap-center"
+                 className="bg-white ml-3  mb-5 h-64 w-64  md:w-72 md:h-72 lg:w-80  lg:h-80 flex-shrink-0 rounded-lg overflow-hidden mt-4 shadow-xl snap-center"
                >
                  {item.imageUrls?.[0] ? (
                    <div className="relative h-full w-full">
