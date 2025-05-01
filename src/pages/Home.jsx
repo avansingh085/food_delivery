@@ -190,12 +190,12 @@ const Home = () => {
 
   return (
     <div className="  flex flex-col">
-      <div className="fixed top-0 left-0 w-full z-50 bg-white">
+     
         <Header />
-      </div>
+     
 
-      <div className="flex-1 pt-24">
-        <SearchComponent />
+      <div className="flex-1 ">
+        {/* <SearchComponent /> */}
         {/* <Craving_food />
         <New_item /> */}
         

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import apiClient from "../utils/axiosInstance";
 
 const DeliveryDashboard = () => {
  
+  const [verifyOrderOtp,setVerifyOrderOtp]=useState(0);
   const [orders, setOrders] = useState([
     {
       id: 1,
@@ -28,7 +30,41 @@ const DeliveryDashboard = () => {
       total: 220,
     },
   ]);
+  useEffect(()=>{
+    const getIncomingOrder=async ()=>{
+      try{
+        let res=await apiClient.get("/getIncomingOrder");
+        if(res.data.success)
+        {
 
+        }
+        else
+        {
+
+        }
+
+      }catch(err){
+           console.log("error occur during fetch incoming order")
+      }
+
+    }
+  
+  },[])
+  const updateOrderStatus=(order_id)=>{
+    try{
+         const response=apiClient.post(`/updateOrderStatus`,{order_id,verifyOrderOtp});
+         if(response.data.success)
+         {
+
+         }
+         else
+         {
+
+         }
+    }catch(err){
+        console.log(err,"error occur during update order status by admin ")
+    }
+  }
   const [acceptedOrders, setAcceptedOrders] = useState([]); 
 
   const handleAcceptOrder = (orderId) => {
@@ -84,7 +120,11 @@ const DeliveryDashboard = () => {
           <div className="text-gray-600">No orders have been accepted yet.</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {acceptedOrders.map((order) => (
+            {acceptedOrders.map((order) => {
+              
+                 if(order.status==="Delivered")
+                  return null;
+              return(
               <div key={order.id} className="bg-white shadow-md rounded-lg p-4">
                 <h3 className="text-lg font-bold text-gray-800">{order.customerName}</h3>
                 <p className="text-gray-600">Mobile: {order.customerMobile}</p>
@@ -92,14 +132,17 @@ const DeliveryDashboard = () => {
                 <p className="text-gray-600">Delivery Address: {order.deliveryAddress}</p>
                 <p className="text-gray-600">Status: {order.status}</p>
                 <div className="mt-4 flex gap-2">
-                  {order.status === "Picked Up" ? (
-                    <button
-                      onClick={() => handleDelivered(order.id)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                    >
-                      Mark as Delivered
-                    </button>
-                  ) : (
+                  {order.status === "Picked Up"&& (
+                    <div>
+                    
+                    <input type="number" placeholder="enter otp" className=" border-2 outline-none  px-4 py-2 rounded-lg  m-2" onChange={(e)=>setVerifyOrderOtp(e.target.value)}/>
+                   {
+                    verifyOrderOtp>999&&verifyOrderOtp<10000&& <button className={`bg-blue-500 text-white px-4 py-2  rounded-lg hover:bg-blue-600 ${verifyOrderOtp>999&&verifyOrderOtp<10000 ? '' :''}`} onClick={() => handleDelivered(order.id)} >verify mark as Delivered</button>
+                   }
+                   
+                    </div>
+                  )} :
+                  {order.status==="Pending" &&(
                     <button
                       onClick={() => handlePickedUp(order.id)}
                       className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
@@ -109,7 +152,7 @@ const DeliveryDashboard = () => {
                   )}
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         )}
       </section>
