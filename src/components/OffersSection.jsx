@@ -9,7 +9,7 @@ const OffersSection = () => {
     ]
 
     return(
-        <div className=" px-6 bg-white max-w-screen-sm mt-2 h-28 flex overflow-x-scroll gap-4 scroll-smooth snap-x snap-mandatory hide-scrollbar">
+        <div className=" px-6 bg-white w-screen mt-2 h-28 flex overflow-x-scroll gap-4 scroll-smooth snap-x snap-mandatory hide-scrollbar">
             {
                 data.map((item, index) => (
                     <div key={index} className=" items-center justify-center rounded-xl flex h-20 w-80 sm:w-56 md:w-72 flex-shrink-0 bg-pink-600 overflow-hidden mt-4 snap-center">
