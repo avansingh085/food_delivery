@@ -13,42 +13,17 @@ import Admin from './Admin';
 import AddNewFood from '../components/AddNewFood';
 import DeliveryDashboard from './DeliveryDashboard';
 import Settings from './setting';
+import { fetchFoodData } from '../redux/menuSlice';
+import { fetchUser } from '../redux/userSlice';
 function Main_Page() {
   const dispatch = useDispatch();
-  const { isLogin, User } = useSelector((state) => state.Data);
-  
-  const [loading, setLoading] = useState(true); // Loading state
+  const {loading}=useSelector((state)=>state.user);
+  useEffect(()=>{
+    dispatch(fetchUser());
+    dispatch(fetchFoodData());
 
-  const fetchProfile = async () => {
-  
-    try {
-     
-      const res = await axiosInstance.get(`/profile`);
-      const cartData = await axiosInstance.get(`/getCart`);
+  },[dispatch])
 
-     // console.log("AVAN", res, cartData, 'Fetched Profile A');
-      if (res.data.success && cartData.data.success) {
-        dispatch(setLogin(true));
-        dispatch(setCart(cartData.data.cart));
-        dispatch(setUser(res.data.User));
-       
-        return 0;
-        
-      } else {
-        
-      }
-    } catch (error) {
-      //console.error('Error fetching profile:', error);
-      dispatch(setLogin(false));
-    } finally {
-      setLoading(false);
-    }
-  
-  };
-
-  useEffect(() => {
-    fetchProfile();
-  }, [dispatch]);
 
   if (loading) {
     return (

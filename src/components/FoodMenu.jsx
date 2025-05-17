@@ -1,28 +1,29 @@
 import React, { useState, useEffect, useCallback, useMemo,useRef } from "react";
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
-import { setCart } from "../redux/globSlice";
+import { setCart } from "../redux/userSlice";
 import axiosInstance from "../utils/axiosInstance";
 import FoodDetailPage from "../pages/ItemExplo";
 import axios from "axios";
 import BeksPizzaMenu from "./BeksPizzaMenu";
 import OffersSection from "./OffersSection";
+import { setFoodData } from "../redux/menuSlice";
 
 const ITEMS_PER_PAGE = 20;
 let val;
 const FoodMenu = () => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [menuData, setMenuData] = useState([]);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const { User, cart } = useSelector((state) => state.Data);
-  const { deliveryLocation } = useSelector((state) => state.Data);
+  const { user, cart } = useSelector((state) => state.user);
+  const { deliveryLocation } = useSelector((state) => state.user);
   const [itemId, setItemId] = useState();
   const dispatch = useDispatch();
-
+const {menu}=useSelector((state)=>state.menu);
   const [customization, setCustomization] = useState({
     sugar: 0,
     size: "Medium",
@@ -65,7 +66,7 @@ const FoodMenu = () => {
         });
 
         if (response.data.success) {
-          setMenuData(prev => [...prev, ...response.data.items]);
+          dispatch(setFoodData( [...menu, ...response.data.items]));
           setTotalPages(response.data.totalPages);
           setError(null);
         }
@@ -80,7 +81,7 @@ const FoodMenu = () => {
   }, [currentPage]);
 
 
-  const categories = menuData.reduce((acc, item) => {
+  const categories = menu.reduce((acc, item) => {
     const category = acc.find(cat => cat.name === item.category);
     if (category) {
       category.items.push(item);
@@ -97,7 +98,7 @@ const FoodMenu = () => {
     setIsAddingToCart(true);
     try {
       await axiosInstance.post(`/addCart`, {
-        mobile: User?.mobile,
+        mobile: user?.mobile,
         item: {
           ...selectedItem,
           customizationOptions: customization,

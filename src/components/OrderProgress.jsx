@@ -5,11 +5,10 @@ const statusSteps = ["ACCEPTED", "PICKED", "DELIVERED"];
 const OrdersProgress = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Automatically move through steps (fake animation)
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentStep((prevStep) => (prevStep < statusSteps.length - 1 ? prevStep + 1 : prevStep));
-    }, 2000); // Change status every 2 seconds
+    }, 2000); 
 
     return () => clearInterval(interval);
   }, []);

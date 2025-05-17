@@ -2,14 +2,14 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FaTrashAlt, FaArrowLeft } from "react-icons/fa";
-import { setCart } from "../redux/globSlice";
+import { setCart } from "../redux/userSlice";
 import axiosInstance from "../utils/axiosInstance";
 
 const CartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const mobile = useSelector((state) => state.Data.User?.mobile);
-  const cartItems = useSelector((state) => state.Data.cart);
+  const mobile = useSelector((state) => state.user?.user?.mobile);
+  const cartItems = useSelector((state) => state.user?.cart);
 
   const [totalPrice, setTotalPrice] = useState(0);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
