@@ -36,7 +36,7 @@ const Header=()=>{
         <div className="z-50 h-16 w-screen grid items-center bg-blue-800 shadow-md px-4">
   <HamburgerMenu setIsMenuOpen={setIsMenuOpen} isMenuOpen={isMenuOpen} />
 
-  {!isLogin ? (
+  {isLogin ? (
     <button
       className="absolute right-8 h-10 w-10 rounded-full border-2 border-white hover:scale-105 transition"
       onClick={() => setIsMenuOpen(!isMenuOpen)}

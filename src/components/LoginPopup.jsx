@@ -13,13 +13,13 @@ const LoginPopup = ({
 }) => {
   return (
   <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black bg-opacity-30">
-  <div className="w-full md:w-1/3 bg-pink-600 p-4 md:p-6 shadow-lg border-t-2 border-gray-300 rounded-t-2xl md:rounded-2xl 
+  <div className="w-full md:w-1/3  p-4 md:p-6 shadow-lg border-t-2 border-gray-300 rounded-t-2xl md:rounded-2xl 
                   max-h-[90vh] overflow-y-auto">
     <h2 className="text-center font-bold text-green-600 text-3xl md:text-4xl mb-2">Beks Pizza</h2>
     <h2 className="text-center text-2xl md:text-4xl font-bold text-black mb-4">Otp verification</h2>
 
     {!otpSent ? (
-      <div className="flex flex-col items-center bg-red-500 p-4 rounded-lg">
+      <div className="flex flex-col items-center  p-4 rounded-lg">
         <button
           onClick={sendOtp}
           className="w-full md:w-40 bg-green-500 mb-3 text-white py-2 rounded hover:bg-green-600"
