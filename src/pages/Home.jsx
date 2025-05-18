@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
-import Detect_location from "../detect_location";
-import Craving_food from "../components/Craving_food";
-import New_item from "../New_item";
 import FoodCategories from "../components/FoodMenu";
-import SearchComponent from "../components/search_item";
-import Bottom_NaveBar from "../components/bottom_navbar";
+import Bottom_NaveBar from "../components/BottomNavbar";
 import { setLogin, setUser } from "../redux/globSlice";
-import axios, { Axios } from "axios";
 import axiosInstance from "../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
-import BeksPizza from "../components/BeksPizza";
+import BeksPizza from "../components/BeksImage";
 import LoginPopup from "../components/LoginPopup";
 const Home = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
@@ -21,7 +16,7 @@ const Home = () => {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const { user, login } = useSelector((state) => state.user);
- 
+
   const sendOtp = async () => {
     try {
       if (!/^\+?\d{10,13}$/.test(mobileNumber)) {
@@ -41,7 +36,7 @@ const Home = () => {
     try {
       const enteredOtp = otp.join("");
       const response = await axiosInstance.post(`/verify-otp`, { phone: mobileNumber, otp: enteredOtp });
-    
+
       if (response.data.success) {
         const res = await axiosInstance.post(`/login`, { mobile: mobileNumber });
         dispatch(setLogin(true));
@@ -54,7 +49,7 @@ const Home = () => {
         setMessage(response.data.message || "Invalid OTP");
       }
     } catch (error) {
-     
+
       setMessage(error || "Invalid OTP");
     }
   };
@@ -90,18 +85,18 @@ const Home = () => {
 
   return (
     <div className="  flex flex-col">
-     
-        <Header />
-     
+
+      <Header />
+
 
       <div className="flex-1 ">
         {/* <SearchComponent /> */}
         {/* <Craving_food />
         <New_item /> */}
-        
-         <BeksPizza/>
+
+        <BeksPizza />
         <FoodCategories />
-       
+
       </div>
 
       {showLoginPopup && (

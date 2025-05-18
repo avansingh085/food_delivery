@@ -5,9 +5,7 @@ import Home from './Home';
 import FoodDetailPage from './ItemExplo';
 import CartPage from '../components/cart';
 import OrderTracker from '../components/OrderTracker';
-import { setLogin, setUser, setCart } from '../redux/globSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import axiosInstance from '../utils/axiosInstance';
 import Location from '../components/location';
 import Admin from './Admin';
 import AddNewFood from '../components/AddNewFood';
@@ -15,9 +13,12 @@ import DeliveryDashboard from './DeliveryDashboard';
 import Settings from './setting';
 import { fetchFoodData } from '../redux/menuSlice';
 import { fetchUser } from '../redux/userSlice';
+import LoadingSpinner from '../components/Loader';
+
 function Main_Page() {
   const dispatch = useDispatch();
   const {loading}=useSelector((state)=>state.user);
+  console.log(useSelector((state)=>state.menu),"menu show useselector");
   useEffect(()=>{
     dispatch(fetchUser());
     dispatch(fetchFoodData());
@@ -27,9 +28,7 @@ function Main_Page() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
-      </div>
+      <LoadingSpinner/>
     );
   }
 
@@ -49,6 +48,7 @@ function Main_Page() {
           <Route path="/AddNewFood" element={<AddNewFood />} />
         </Routes>
       </BrowserRouter>
+      
     </div>
   );
 }

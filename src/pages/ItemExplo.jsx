@@ -13,12 +13,12 @@ import {
   FaTag
 } from 'react-icons/fa';
 
-const FoodDetailPage = ({itemId,setItemId}) => {
-  const id = useParams()?.id||itemId;
+const FoodDetailPage = ({ itemId, setItemId }) => {
+  const id = useParams()?.id || itemId;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user?.user);
-  
+
   const { deliveryLocation } = useSelector((state) => state.user);
 
   const [foodItem, setFoodItem] = useState(null);
@@ -26,7 +26,7 @@ const FoodDetailPage = ({itemId,setItemId}) => {
   const [error, setError] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  
+
   const [customization, setCustomization] = useState({
     size: "Medium",
     crust: "Classic",
@@ -59,11 +59,11 @@ const FoodDetailPage = ({itemId,setItemId}) => {
     let price = basePrice;
     const sizePrices = { Small: 0, Medium: 10, Large: 30 };
     const crustPrices = { Classic: 0, 'Thin Crust': 30, 'Stuffed Crust': 80 };
-    
+
     price += sizePrices[customization.size];
     price += crustPrices[customization.crust];
     price += customization.extraCheese ? 50 : 0;
-    
+
     return price;
   };
 
@@ -83,23 +83,23 @@ const FoodDetailPage = ({itemId,setItemId}) => {
     try {
       const { data } = await axiosInstance.post(`/addCart`, {
         mobile: user.mobile,
-        item:{
-        id: foodItem._id,
-        quantity: 1,
-        customization: {
-          ...customization,
-          calculatedPrice: totalPrice
+        item: {
+          id: foodItem._id,
+          quantity: 1,
+          customization: {
+            ...customization,
+            calculatedPrice: totalPrice
+          },
         },
-      },
         deliveryLocation
       });
 
       if (data.success) {
-       
+
         const cartRes = await axiosInstance.get(`/getCart`);
         if (cartRes.data.success) {
-          dispatch({ 
-            type: 'addCart', 
+          dispatch({
+            type: 'addCart',
             payload: cartRes.data.cart
           });
         }
@@ -141,7 +141,7 @@ const FoodDetailPage = ({itemId,setItemId}) => {
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-16 flex items-center justify-between">
-            <button 
+            <button
               onClick={() => navigate(-1)}
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
             >
@@ -160,15 +160,15 @@ const FoodDetailPage = ({itemId,setItemId}) => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="grid lg:grid-cols-2 gap-8 lg:gap-12"
         >
-      
+
           <div className="relative aspect-square bg-gray-100 rounded-3xl overflow-hidden shadow-xl">
-            <img 
-            src="https://assets.box8.co.in/rectangle-19x10/xhdpi/product/8074"
+            <img
+              src="https://assets.box8.co.in/rectangle-19x10/xhdpi/product/8074"
               // src={foodItem.imageUrls?.[0] || '/placeholder-food.jpg'} 
               alt={foodItem.name}
               className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-zoom-in"
@@ -201,11 +201,10 @@ const FoodDetailPage = ({itemId,setItemId}) => {
                     <button
                       key={option.size}
                       onClick={() => setCustomization(prev => ({ ...prev, size: option.size }))}
-                      className={`p-3 rounded-lg text-center transition-all ${
-                        customization.size === option.size
-                          ? 'bg-orange-500 text-white ring-2 ring-orange-500'
-                          : 'bg-gray-100 hover:bg-gray-200'
-                      }`}
+                      className={`p-3 rounded-lg text-center transition-all ${customization.size === option.size
+                        ? 'bg-orange-500 text-white ring-2 ring-orange-500'
+                        : 'bg-gray-100 hover:bg-gray-200'
+                        }`}
                     >
                       <div className="font-medium">{option.size}</div>
                       <div className="text-sm">
@@ -270,7 +269,7 @@ const FoodDetailPage = ({itemId,setItemId}) => {
                 <span className="text-3xl font-bold text-orange-500">₹{totalPrice}</span>
               </div>
 
-              <button 
+              <button
                 onClick={handleAddToCart}
                 disabled={isAddingToCart}
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02] disabled:opacity-75"
@@ -294,15 +293,15 @@ const FoodDetailPage = ({itemId,setItemId}) => {
       {selectedImage && (
         <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
           <div className="relative max-w-4xl w-full">
-            <button 
+            <button
               className="absolute -top-8 right-0 text-white text-4xl hover:text-orange-500 transition-colors"
               onClick={() => setSelectedImage(null)}
             >
               &times;
             </button>
-            <img 
-              src={selectedImage} 
-              alt="Enlarged food item" 
+            <img
+              src={selectedImage}
+              alt="Enlarged food item"
               className="w-full h-full object-contain rounded-2xl shadow-2xl"
             />
           </div>

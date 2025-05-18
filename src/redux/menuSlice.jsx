@@ -5,9 +5,10 @@ export const fetchFoodData = createAsyncThunk(
     'menu/fetchMenu',
     async (_, thunkAPI) => {
         try {
-            const response = await apiClient.get('/getMenu',{
-          params: { page: 1, limit: 20 },
-        });
+            const response = await apiClient.get('/getMenu', {
+                params: { page: 1, limit: 20 },
+            });
+            console.log(response.data, "HELLOWOWOOW")
             return response.data.items;
         }
         catch (err) {

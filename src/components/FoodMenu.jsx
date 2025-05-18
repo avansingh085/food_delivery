@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo,useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { setCart } from "../redux/userSlice";
 import axiosInstance from "../utils/axiosInstance";
 import FoodDetailPage from "../pages/ItemExplo";
 import axios from "axios";
-import BeksPizzaMenu from "./BeksPizzaMenu";
+import BeksPizzaMenu from "./FoodCateg";
 import OffersSection from "./OffersSection";
 import { setFoodData } from "../redux/menuSlice";
 
@@ -13,7 +13,7 @@ const ITEMS_PER_PAGE = 20;
 let val;
 const FoodMenu = () => {
   const [selectedItem, setSelectedItem] = useState(null);
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +23,7 @@ const FoodMenu = () => {
   const { deliveryLocation } = useSelector((state) => state.user);
   const [itemId, setItemId] = useState();
   const dispatch = useDispatch();
-const {menu}=useSelector((state)=>state.menu);
+  const { menu } = useSelector((state) => state.menu);
   const [customization, setCustomization] = useState({
     sugar: 0,
     size: "Medium",
@@ -56,6 +56,19 @@ const {menu}=useSelector((state)=>state.menu);
   }, [cart]);
 
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 100 && !isLoading
+      ) {
+        setCurrentPage(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoading]);
 
   useEffect(() => {
     const fetchMenuData = async () => {
@@ -66,7 +79,7 @@ const {menu}=useSelector((state)=>state.menu);
         });
 
         if (response.data.success) {
-          dispatch(setFoodData( [...menu, ...response.data.items]));
+          dispatch(setFoodData([...menu, ...response.data.items]));
           setTotalPages(response.data.totalPages);
           setError(null);
         }
@@ -132,118 +145,117 @@ const {menu}=useSelector((state)=>state.menu);
           {error}
         </div>
       )}
-        
+
       <BeksPizzaMenu />
-      <OffersSection/>
+      <OffersSection />
       <div className="mx-2 w-screen min-h-screen bg-gray-200" loading="lazy" >
         {categories.map((category) => (
-         <section
-         key={category.name}
-         className="  mt-2 bg-white "
-         role="region"
-         aria-label={`Category: ${category.name}`}
-       >
-         <h2 className="text-lg ml-3 sm:text-xl font-semibold text-gray-900 mb-4 px-4 sm:px-0">
-           {category.name}
-         </h2>
-         <div className="relative">
-           <div
-             ref={scrollContainerRef}
-             className="flex w-full overflow-x-scroll gap-4 scroll-smooth snap-x snap-mandatory hide-scrollbar"
-             tabIndex={0}
-             role="group"
-             aria-label={`Scrollable items for ${category.name}`}
-             onKeyDown={handleKeyDown}
-           >
-             {category.items.map((item) => (
-               <div
-                 key={item._id}
-                 className="bg-white ml-3  mb-5 h-64 w-64  md:w-72 md:h-72 lg:w-80  lg:h-80 flex-shrink-0 rounded-lg overflow-hidden mt-4 shadow-xl snap-center"
-               >
-                 {item.imageUrls?.[0] ? (
-                   <div className="relative h-full w-full">
-                     <Link
-                       to={`/food/${item._id}`}
-                       className="block relative aspect-square overflow-hidden"
-                       aria-label={`View details for ${item.name}`}
-                     >
-                       <img
-                         src={item.imageUrls[0]}
-                         alt={item.name || 'Food item'}
-                         className="w-full h-full object-cover"
-                         loading="lazy"
-                         onError={(e) => (e.target.src = '/fallback-image.jpg')}
-                       />
-                     </Link>
-                     <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-gray-950/80 to-transparent p-4 text-white">
-                       <button
-                         className="absolute top-4 right-0  px-3 py-1 bg-slate-500  text-sm rounded-l-lg border border-slate-500 hover:bg-slate-600"
-                         onClick={() => setSelectedItem(item)}
-                         aria-label={`Customize ${item.name}`}
-                       >
-                         Customise &gt;
-                       </button>
-                       <div className="flex items-center gap-2 mt-12">
-                         <div className="w-5 h-5 border-2 border-green-600 bg-white flex items-center justify-center rounded-sm">
-                           <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                         </div>
-                         <h3 className="font-bold text-lg sm:text-xl">{item.name}</h3>
-                       </div>
-                       <p className="text-sm line-clamp-2">{item.description}</p>
-                       <div className="grid grid-cols-2 items-center mt-4 border-t border-gray-300 pt-2">
-                         <span className="text-xl sm:text-2xl font-semibold">
-                           ₹{item.price}
-                         </span>
-                         <div className="flex justify-end">
-                           <button
-                             className={`px-4 py-2 font-bold text-lg sm:text-xl rounded-lg ${
-                               itemIdsInCart?.includes(item._id)
-                                 ? 'bg-white text-black border border-gray-300'
-                                 : 'bg-red-600 text-white hover:bg-red-700'
-                             }`}
-                             onClick={(e) => handleAddToCart(item, e)}
-                             aria-label={`Add ${item.name} to cart`}
-                           >
-                             Add +
-                           </button>
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 ) : (
-                   <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                     <span className="text-gray-400 text-sm">No Image Available</span>
-                   </div>
-                 )}
-                 {item.offer && (
-                   <div className="absolute top-2 right-2 bg-red-600 text-white text-xs sm:text-sm px-2 py-1 rounded">
-                     {item.offer}% OFF
-                   </div>
-                 )}
-               </div>
-             ))}
-           </div>
-           {/* Navigation Arrows */}
-           <button
-             className="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full opacity-75 hover:opacity-100 hidden sm:block"
-             onClick={() =>
-               scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' })
-             }
-             aria-label="Scroll left"
-           >
-             ←
-           </button>
-           <button
-             className="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full opacity-75 hover:opacity-100 hidden sm:block"
-             onClick={() =>
-               scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' })
-             }
-             aria-label="Scroll right"
-           >
-             →
-           </button>
-         </div>
-       </section>
+          <section
+            key={category.name}
+            className="  mt-2 bg-white "
+            role="region"
+            aria-label={`Category: ${category.name}`}
+          >
+            <h2 className="text-lg ml-3 sm:text-xl font-semibold text-gray-900 mb-4 px-4 sm:px-0">
+              {category.name}
+            </h2>
+            <div className="relative">
+              <div
+                ref={scrollContainerRef}
+                className="flex w-full overflow-x-scroll gap-4 scroll-smooth snap-x snap-mandatory hide-scrollbar"
+                tabIndex={0}
+                role="group"
+                aria-label={`Scrollable items for ${category.name}`}
+                onKeyDown={handleKeyDown}
+              >
+                {category.items.map((item) => (
+                  <div
+                    key={item._id}
+                    className="bg-white ml-3  mb-5 h-64 w-64  md:w-72 md:h-72 lg:w-80  lg:h-80 flex-shrink-0 rounded-lg overflow-hidden mt-4 shadow-xl snap-center"
+                  >
+                    {item.imageUrls?.[0] ? (
+                      <div className="relative h-full w-full">
+                        <Link
+                          to={`/food/${item._id}`}
+                          className="block relative aspect-square overflow-hidden"
+                          aria-label={`View details for ${item.name}`}
+                        >
+                          <img
+                            src={item.imageUrls[0]}
+                            alt={item.name || 'Food item'}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => (e.target.src = '/fallback-image.jpg')}
+                          />
+                        </Link>
+                        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-gray-950/80 to-transparent p-4 text-white">
+                          <button
+                            className="absolute top-4 right-0  px-3 py-1 bg-slate-500  text-sm rounded-l-lg border border-slate-500 hover:bg-slate-600"
+                            onClick={() => setSelectedItem(item)}
+                            aria-label={`Customize ${item.name}`}
+                          >
+                            Customise &gt;
+                          </button>
+                          <div className="flex items-center gap-2 mt-12">
+                            <div className="w-5 h-5 border-2 border-green-600 bg-white flex items-center justify-center rounded-sm">
+                              <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                            </div>
+                            <h3 className="font-bold text-lg sm:text-xl">{item.name}</h3>
+                          </div>
+                          <p className="text-sm line-clamp-2">{item.description}</p>
+                          <div className="grid grid-cols-2 items-center mt-4 border-t border-gray-300 pt-2">
+                            <span className="text-xl sm:text-2xl font-semibold">
+                              ₹{item.price}
+                            </span>
+                            <div className="flex justify-end">
+                              <button
+                                className={`px-4 py-2 font-bold text-lg sm:text-xl rounded-lg ${itemIdsInCart?.includes(item._id)
+                                  ? 'bg-white text-black border border-gray-300'
+                                  : 'bg-red-600 text-white hover:bg-red-700'
+                                  }`}
+                                onClick={(e) => handleAddToCart(item, e)}
+                                aria-label={`Add ${item.name} to cart`}
+                              >
+                                Add +
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                        <span className="text-gray-400 text-sm">No Image Available</span>
+                      </div>
+                    )}
+                    {item.offer && (
+                      <div className="absolute top-2 right-2 bg-red-600 text-white text-xs sm:text-sm px-2 py-1 rounded">
+                        {item.offer}% OFF
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {/* Navigation Arrows */}
+              <button
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full opacity-75 hover:opacity-100 hidden sm:block"
+                onClick={() =>
+                  scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' })
+                }
+                aria-label="Scroll left"
+              >
+                ←
+              </button>
+              <button
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full opacity-75 hover:opacity-100 hidden sm:block"
+                onClick={() =>
+                  scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' })
+                }
+                aria-label="Scroll right"
+              >
+                →
+              </button>
+            </div>
+          </section>
         ))}
 
         {(
@@ -251,7 +263,7 @@ const {menu}=useSelector((state)=>state.menu);
             <button
               onClick={() => setCurrentPage(prev => prev + 1)}
               disabled={isLoading}
-              className="px-4 h-16 font-extrabold text-2xl w-60 py-1.5 mt-5 bg-black text-white  rounded-lg disabled:opacity-50"
+              className="px-4  font-extrabold  w-fit py-1.5 mt-5 bg-black text-white  rounded-lg disabled:opacity-50"
             >
               {isLoading ? 'Loading...' : 'Load More'}
             </button>

@@ -6,10 +6,14 @@ const OffersSection = () => {
         {offer:"Buy 1 Get 1 Free", image:"/pizzalogo.jpg"},
         {offer:"Free Delivery on orders above $20", image:"/pizzalogo.jpg"},
         {offer:"20% off on first order", image:"/pizzalogo.jpg"},
+         {offer:"50% off on all pizzas", image:"/pizzalogo.jpg"},
+        {offer:"Buy 1 Get 1 Free", image:"/pizzalogo.jpg"},
+        {offer:"Free Delivery on orders above $20", image:"/pizzalogo.jpg"},
+        {offer:"20% off on first order", image:"/pizzalogo.jpg"},
     ]
 
     return(
-        <div className=" px-6 bg-white w-screen mt-2 h-28 flex overflow-x-scroll gap-4 scroll-smooth snap-x snap-mandatory hide-scrollbar">
+        <div  className=" px-6 bg-white w-screen mt-2 h-28 flex overflow-x-scroll gap-4 scroll-smooth snap-x snap-mandatory hide-scrollbar">
             {
                 data.map((item, index) => (
                     <div key={index} className=" items-center justify-center rounded-xl flex h-20 w-80 sm:w-56 md:w-72 flex-shrink-0 bg-pink-600 overflow-hidden mt-4 snap-center">
