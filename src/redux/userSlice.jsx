@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../utils/axiosInstance";
 export const fetchUser = createAsyncThunk('user/fetchUser', async (_, thunkAPI) => {
+    let error=null;
     try {
+        //if network problem or server 
         for(let round=0;round<10;round++)
         {
             try{
@@ -10,18 +12,19 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (_, thunkAPI) 
         return  response.data.user
             }catch(err)
             {
-                
+               error=err;
             }
         }
         
     }
     catch (error) {
-        console.log(error);
+       
+
+    }
+     console.log(error);
         return thunkAPI.rejectWithValue(
             error.response?.data?.message || error.message || 'Failed to fetch user'
         )
-
-    }
 
 })
 const initialState = {
