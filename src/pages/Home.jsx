@@ -2,20 +2,20 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import FoodCategories from "../components/FoodMenu";
 import Bottom_NaveBar from "../components/BottomNavbar";
-import { setLogin, setUser } from "../redux/globSlice";
 import axiosInstance from "../utils/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import BeksPizza from "../components/BeksImage";
 import LoginPopup from "../components/LoginPopup";
+import { setShowLoginPopup, updateUser } from "../redux/userSlice";
 const Home = () => {
-  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [otpSent, setOtpSent] = useState(false);
   const [resendTimer, setResendTimer] = useState(30);
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
-  const { user, login } = useSelector((state) => state.user);
+  const { user, login,showLoginPopup } = useSelector((state) => state.user);
 
   const sendOtp = async () => {
     try {
@@ -39,8 +39,8 @@ const Home = () => {
 
       if (response.data.success) {
         const res = await axiosInstance.post(`/login`, { mobile: mobileNumber });
-        dispatch(setLogin(true));
-        dispatch(setUser(res.data.user));
+       
+        dispatch(updateUser(res.data.user));
         localStorage.setItem("BeksToken", res.data.token);
         setMessage(response.data.message);
         setShowLoginPopup(false);
@@ -71,7 +71,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowLoginPopup(!login), 10000);
+    const timer = setTimeout(() => dispatch(setShowLoginPopup(!login)), 10000);
     return () => clearTimeout(timer);
   }, [login]);
 

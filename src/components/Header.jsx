@@ -2,6 +2,7 @@ import { useDispatch,useSelector } from "react-redux";
 import HamburgerMenu from "./Hamburger"
 import {useEffect, useState} from "react"
 import { setDeliveryLocation } from "../redux/globSlice";
+import { setShowLoginPopup } from "../redux/userSlice";
 const Header=()=>{
      const [isMenuOpen, setIsMenuOpen] = useState(false);
      const isLogin=useSelector((state)=>state?.user?.login);
@@ -48,7 +49,7 @@ const Header=()=>{
       />
     </button>
   ) : (
-    <button className="absolute right-8 h-10 w-24 rounded-md bg-white text-pink-600 font-semibold hover:bg-pink-100 transition">
+    <button onClick={()=>dispatch(setShowLoginPopup(true))} className="absolute right-8 h-10 w-24 rounded-md bg-white text-pink-600 font-semibold hover:bg-pink-100 transition">
       Login
     </button>
   )}

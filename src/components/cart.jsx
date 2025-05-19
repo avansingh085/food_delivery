@@ -234,7 +234,7 @@ const CartPage = () => {
           <h1 className="text-3xl font-bold text-gray-800">Your Cart</h1>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 mb-24">
           {cartItems?.length > 0 ? (
             cartItems?.map((item) => (
               <div
@@ -292,12 +292,11 @@ const CartPage = () => {
       </div>
       <div className="h-24 w-screen border-t shadow-2xl fixed bottom-0 left-0 right-0 bg-white px-8 flex items-center justify-between z-50">
 
-        {/* Total Price */}
+      
         <div className="text-lg font-bold text-gray-800">
           Total Price: ₹{totalPrice}
         </div>
 
-        {/* Payment Button */}
         <div>
           {cartItems.length > 0 && (
             <button

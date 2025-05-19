@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import apiClient from "../utils/axiosInstance";
-
+import io from 'socket.io-client';
 const DeliveryDashboard = () => {
  
   const [verifyOrderOtp,setVerifyOrderOtp]=useState(0);
@@ -30,6 +30,18 @@ const DeliveryDashboard = () => {
       total: 220,
     },
   ]);
+  useEffect(()=>{
+ 
+    const socket=io('');
+    socket.on('incoming_order',({})=>{
+
+    })
+    return ()=>{
+      socket.off('incoming_order');
+    }
+
+ 
+  },[])
   useEffect(()=>{
     const getIncomingOrder=async ()=>{
       try{
