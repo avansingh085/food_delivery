@@ -181,7 +181,8 @@ const FoodMenu = () => {
                           aria-label={`View details for ${item.name}`}
                         >
                           <img
-                            src={item.imageUrls[0]}
+                           src="https://assets.box8.co.in/rectangle-19x10/xhdpi/product/8074"
+                            // src={item.imageUrls[0]}
                             alt={item.name || 'Food item'}
                             className="w-full h-full object-cover"
                             loading="lazy"
