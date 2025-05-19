@@ -12,24 +12,36 @@ import AddNewFood from '../components/AddNewFood';
 import DeliveryDashboard from './DeliveryDashboard';
 import Settings from './setting';
 import { fetchFoodData } from '../redux/menuSlice';
-import { fetchUser } from '../redux/userSlice';
+import { fetchUser, setCart } from '../redux/userSlice';
 import LoadingSpinner from '../components/Loader';
 
 function Main_Page() {
   const dispatch = useDispatch();
-  const {loading}=useSelector((state)=>state.user);
-  console.log(useSelector((state)=>state.menu),"menu show useselector");
+  const {loading,user}=useSelector((state)=>state.user);
+  const {menu}=useSelector((state)=>state.menu);
   useEffect(()=>{
     try{
     dispatch(fetchUser());
     dispatch(fetchFoodData());
     }catch(err)
     {
-      console.log(err,"hhllllllllllllllllllllllllllllllllllllllllllllllll")
+      console.log(err)
     }
 
   },[dispatch])
-
+  useEffect(()=>{
+    if(menu?.length&&user?.cart)
+    {
+      
+      let cartData=user?.cart?.map((item)=>{
+           let f=menu?.filter((data)=>String(data._id)===String(item.id));
+        
+           return {...item,...f[0]};
+      })
+     
+      dispatch(setCart(cartData));
+    }
+  },[menu,user]);
 
   if (loading) {
     return (

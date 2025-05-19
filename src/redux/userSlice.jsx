@@ -3,9 +3,8 @@ import apiClient from "../utils/axiosInstance";
 export const fetchUser = createAsyncThunk('user/fetchUser', async (_, thunkAPI) => {
     try {
         const response = await apiClient.get('/profile');
-        const response1 = await apiClient.get('/getCart');
        
-        return { user: response.data.user, cart: response1.data.cart };
+        return  response.data.user
     }
     catch (error) {
         console.log(error);
@@ -46,8 +45,8 @@ const userSlice = createSlice({
             .addCase(fetchUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.login = true;
-                state.user = action.payload.user;
-                state.cart = action.payload.cart;
+                state.user = action.payload;
+                
             })
             .addCase(fetchUser.rejected, (state, action) => {
                 state.loading = false;

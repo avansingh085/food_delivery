@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FaTrashAlt, FaArrowLeft } from "react-icons/fa";
-import { setCart } from "../redux/userSlice";
+import { setCart, updateUser } from "../redux/userSlice";
 import axiosInstance from "../utils/axiosInstance";
 
 const CartPage = () => {
@@ -11,65 +11,54 @@ const CartPage = () => {
   const mobile = useSelector((state) => state.user?.user?.mobile);
   const cartItems = useSelector((state) => state.user?.cart);
   const [showCoupen, setShowCoupen] = useState(false);
+ 
   const [totalPrice, setTotalPrice] = useState(0);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
   const [processingIds, setProcessingIds] = useState([]);
-  const coupen=[
-  {
-    "code": "WELCOME50",
-    "description": "Flat 50% off on first order",
-    "discountType": "percentage",
-    "discountValue": 50,
-    "maxDiscountAmount": 100,
-    "minPurchaseAmount": 200,
-    "validFrom": "2025-05-01T00:00:00Z",
-    "validTill": "2025-06-01T23:59:59Z",
-    "usageLimit": 1,
-    "usedCount": 0,
-    "isActive": true
-  },
-  {
-    "code": "FREESHIP",
-    "description": "Free shipping on orders above ₹500",
-    "discountType": "free_shipping",
-    "discountValue": 0,
-    "maxDiscountAmount": 0,
-    "minPurchaseAmount": 500,
-    "validFrom": "2025-05-10T00:00:00Z",
-    "validTill": "2025-07-10T23:59:59Z",
-    "usageLimit": 2,
-    "usedCount": 0,
-    "isActive": true
-  },
-  {
-    "code": "SUMMER10",
-    "description": "10% off on summer sale items",
-    "discountType": "percentage",
-    "discountValue": 10,
-    "maxDiscountAmount": 50,
-    "minPurchaseAmount": 100,
-    "validFrom": "2025-05-15T00:00:00Z",
-    "validTill": "2025-06-30T23:59:59Z",
-    "usageLimit": 5,
-    "usedCount": 0,
-    "isActive": true
-  }
-]
 
-  const fetchCartData = useCallback(async () => {
-    try {
-      const res = await axiosInstance.get(`/getCart`);
-      if (res.data.success) {
-        dispatch(setCart(res.data.cart));
-      }
-    } catch (err) {
-      console.error("Error fetching cart data:", err);
+  const coupen = [
+    {
+      "code": "WELCOME50",
+      "description": "Flat 50% off on first order",
+      "discountType": "percentage",
+      "discountValue": 50,
+      "maxDiscountAmount": 100,
+      "minPurchaseAmount": 200,
+      "validFrom": "2025-05-01T00:00:00Z",
+      "validTill": "2025-06-01T23:59:59Z",
+      "usageLimit": 1,
+      "usedCount": 0,
+      "isActive": true
+    },
+    {
+      "code": "FREESHIP",
+      "description": "Free shipping on orders above ₹500",
+      "discountType": "free_shipping",
+      "discountValue": 0,
+      "maxDiscountAmount": 0,
+      "minPurchaseAmount": 500,
+      "validFrom": "2025-05-10T00:00:00Z",
+      "validTill": "2025-07-10T23:59:59Z",
+      "usageLimit": 2,
+      "usedCount": 0,
+      "isActive": true
+    },
+    {
+      "code": "SUMMER10",
+      "description": "10% off on summer sale items",
+      "discountType": "percentage",
+      "discountValue": 10,
+      "maxDiscountAmount": 50,
+      "minPurchaseAmount": 100,
+      "validFrom": "2025-05-15T00:00:00Z",
+      "validTill": "2025-06-30T23:59:59Z",
+      "usageLimit": 5,
+      "usedCount": 0,
+      "isActive": true
     }
-  }, [dispatch]);
+  ]
 
-  useEffect(() => {
-    fetchCartData();
-  }, [fetchCartData]);
+
 
   const loadRazorpayScript = useCallback(() => {
     if (document.getElementById("razorpay-script")) {
@@ -103,8 +92,10 @@ const CartPage = () => {
     if (quantity < 1 || processingIds.includes(_id)) return;
     addProcessingId(_id);
     try {
-      await axiosInstance.post(`/updateCart`, { mobile, id: _id, quantity });
-      await fetchCartData();
+      let res = await axiosInstance.post("/updateCart", { mobile, id: _id, quantity });
+
+      dispatch(updateUser(res.data.user));
+
     } catch (error) {
       console.error("Error updating quantity:", error);
     } finally {
@@ -116,8 +107,11 @@ const CartPage = () => {
     if (processingIds.includes(_id)) return;
     addProcessingId(_id);
     try {
-      await axiosInstance.post(`/deleteCart`, { mobile, id: _id });
-      await fetchCartData();
+      console.log(mobile, _id)
+      let res = await axiosInstance.post("/deleteCart", { mobile, id: _id });
+
+      dispatch(updateUser(res.data.user));
+
     } catch (error) {
       console.error("Error deleting item:", error);
     } finally {
@@ -127,7 +121,7 @@ const CartPage = () => {
 
   const updateOrderStatus = async (paymentId) => {
     try {
-      const response = await axiosInstance.post(`/addOrder`, {
+      const response = await axiosInstance.post("/addOrder", {
         mobile,
         paymentId,
         cartItems,
@@ -174,7 +168,7 @@ const CartPage = () => {
     const rzp = new window.Razorpay(options);
     rzp.open();
   };
-
+   console.log(cartItems,"PPPPPPPPPPLLLLLLLLLL")
   return (
     <div className="min-h-screen w-screen">
       <div className="max-w-7xl mx-auto p-6 bg-gray-100">
@@ -198,36 +192,34 @@ const CartPage = () => {
 
                 />
                 <div className={`absolute mt-1  w-screen bg-white left-0 transform duration-1000 `} onClick={() => setShowCoupen((pre) => !pre)}>
-                  
-                   {showCoupen&&coupen.map((data, key) => {
-  const discountLabel =
-    data.discountType === "percentage"
-      ? `${data.discountValue}% OFF`
-      : data.discountType === "free_shipping"
-      ? "Free Shipping"
-      : `₹${data.discountValue} OFF`;
 
-  return (
-    <div
-      key={key}
-      className="flex justify-between items-center bg-white rounded-xl shadow-md px-4 py-3 mb-4 hover:shadow-lg transition-all duration-300"
-    >
-      <div>
-        <div className="text-lg font-semibold text-gray-800">{data.code}</div>
-        <div className="text-sm text-gray-500">{data.description}</div>
-      </div>
+                  {showCoupen && coupen.map((data, key) => {
+                    const discountLabel =
+                      data.discountType === "percentage"
+                        ? `${data.discountValue}% OFF`
+                        : data.discountType === "free_shipping"
+                          ? "Free Shipping"
+                          : `₹${data.discountValue} OFF`;
 
-      <div className="text-green-600 font-bold">{discountLabel}</div>
+                    return (
+                      <div
+                        key={key}
+                        className="flex justify-between items-center bg-white rounded-xl shadow-md px-4 py-3 mb-4 hover:shadow-lg transition-all duration-300"
+                      >
+                        <div>
+                          <div className="text-lg font-semibold text-gray-800">{data.code}</div>
+                          <div className="text-sm text-gray-500">{data.description}</div>
+                        </div>
 
-      <button className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors duration-200">
-        Apply
-      </button>
-    </div>
-  );}
-)}
+                        <div className="text-green-600 font-bold">{discountLabel}</div>
 
-
-
+                        <button className="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors duration-200">
+                          Apply
+                        </button>
+                      </div>
+                    );
+                  }
+                  )}
 
                 </div>
               </div>
@@ -243,19 +235,19 @@ const CartPage = () => {
         </div>
 
         <div className="space-y-4">
-          {cartItems.length > 0 ? (
-            cartItems.map((item) => (
+          {cartItems?.length > 0 ? (
+            cartItems?.map((item) => (
               <div
                 key={item._id}
                 className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md"
               >
-                <div  className="flex items-center gap-4 flex-1">
-                <Link to={`/food/${item._id}`}>
-                  <img
-                    src={item.imageUrls[0] || "/default-image.jpg"}
-                    alt={item.title}
-                    className="w-24 h-24 object-cover rounded-lg"
-                  />
+                <div className="flex items-center gap-4 flex-1">
+                  <Link to={`/food/${item._id}`}>
+                    <img
+                      src={item?.imageUrls[0] || "/default-image.jpg"}
+                      alt={item.title}
+                      className="w-24 h-24 object-cover rounded-lg"
+                    />
                   </Link>
                   <div>
                     <h2 className="text-xl font-semibold">{item.title}</h2>
