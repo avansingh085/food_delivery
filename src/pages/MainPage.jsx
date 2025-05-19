@@ -20,8 +20,13 @@ function Main_Page() {
   const {loading}=useSelector((state)=>state.user);
   console.log(useSelector((state)=>state.menu),"menu show useselector");
   useEffect(()=>{
+    try{
     dispatch(fetchUser());
     dispatch(fetchFoodData());
+    }catch(err)
+    {
+      console.log(err,"hhllllllllllllllllllllllllllllllllllllllllllllllll")
+    }
 
   },[dispatch])
 
