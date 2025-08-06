@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import apiClient from "../utils/axiosInstance";
-import io from 'socket.io-client';
+import { useSelector,useDispatch } from "react-redux";
+import { updateIncomigOrder } from "../redux/incomingOrderSlice";
+
 const DeliveryDashboard = () => {
  
   const [verifyOrderOtp,setVerifyOrderOtp]=useState(0);
+  const {socket,isSocketConn}=useSelector((state)=>state.socket);
+  const {incomingOrder}=useSelector((state)=>state.incomingOrders);
+  const dispatch=useDispatch();
   const [orders, setOrders] = useState([
     {
       id: 1,
@@ -30,53 +35,25 @@ const DeliveryDashboard = () => {
       total: 220,
     },
   ]);
-  useEffect(()=>{
- 
-    const socket=io('');
-    socket.on('incoming_order',({})=>{
-
-    })
-    return ()=>{
-      socket.off('incoming_order');
-    }
-
- 
-  },[])
-  useEffect(()=>{
-    const getIncomingOrder=async ()=>{
-      try{
-        let res=await apiClient.get("/getIncomingOrder");
-        if(res.data.success)
-        {
-
-        }
-        else
-        {
-
-        }
-
-      }catch(err){
-           console.log("error occur during fetch incoming order")
-      }
-
-    }
   
-  },[])
+  
   const updateOrderStatus=(order_id)=>{
-    try{
-         const response=apiClient.post(`/updateOrderStatus`,{order_id,verifyOrderOtp});
-         if(response.data.success)
-         {
-
-         }
-         else
-         {
-
-         }
-    }catch(err){
-        console.log(err,"error occur during update order status by admin ")
-    }
+       if(!isSocketConn)
+       {
+        console.log('socket not connected');
+        return;
+       }
+       socket.emit('updateOrderStatus',{order_id});
   }
+  const orderCancel=(order_id)=>{
+    if(!isSocketConn)
+       {
+        console.log('socket not connected');
+        return;
+       }
+       socket.emit('orderCancel',{order_id});
+  }
+  
   const [acceptedOrders, setAcceptedOrders] = useState([]); 
 
   const handleAcceptOrder = (orderId) => {

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaTrashAlt, FaArrowLeft } from "react-icons/fa";
 import { setCart, updateUser } from "../redux/userSlice";
 import axiosInstance from "../utils/axiosInstance";
+import { getSocket } from "../utils/socket";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -129,6 +130,11 @@ const CartPage = () => {
       });
       if (response.data.success) {
         dispatch(setCart([]));
+       const socket=getSocket();
+       if(!socket)
+       {
+        socket.emit('upadteIncomingOrder',{});
+       }
         navigate("/MyOrder");
       } else {
         console.error("Error updating order status:", response.data.message);

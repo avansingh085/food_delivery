@@ -64,6 +64,7 @@ const userSlice = createSlice({
                 state.showLoginPopup=false;
                 state.user = action.payload;
                 
+                
             })
             .addCase(fetchUser.rejected, (state, action) => {
                 state.loading = false;

@@ -12,6 +12,7 @@ const OrdersProgress = () => {
 
     return () => clearInterval(interval);
   }, []);
+  
 
   return (
     <div className="flex items-center justify-center h-20 w-full bg-white rounded-lg shadow-sm">

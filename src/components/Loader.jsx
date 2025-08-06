@@ -1,23 +1,15 @@
 import React from "react";
+import { FaSpinner } from "react-icons/fa";
 
-const LoadingSpinner = () => {
+const ModernLoader = () => {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="relative w-16 h-16 animate-spin-slow">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-3 h-3 bg-blue-500 rounded-full"
-            style={{
-              top: '50%',
-              left: '50%',
-              transform: `rotate(${(360 / 6) * i}deg) translate(20px)`,
-            }}
-          />
-        ))}
-      </div>
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+      <FaSpinner className="text-4xl text-blue-600 dark:text-blue-400 animate-spin" />
+      <p className="mt-4 text-gray-600 dark:text-gray-300 font-medium animate-pulse">
+        Loading...
+      </p>
     </div>
   );
 };
 
-export default LoadingSpinner;
+export default ModernLoader;
