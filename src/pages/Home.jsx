@@ -70,10 +70,10 @@ const Home = () => {
     setShowLoginPopup(false);
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => dispatch(setShowLoginPopup(!login)), 10000);
-    return () => clearTimeout(timer);
-  }, [login]);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => dispatch(setShowLoginPopup(!login)), 10000);
+  //   return () => clearTimeout(timer);
+  // }, [login]);
 
   useEffect(() => {
     let interval;
@@ -84,20 +84,20 @@ const Home = () => {
   }, [otpSent, resendTimer]);
 
   return (
-    <div className="  flex flex-col">
+    <div className="  flex flex-col w-screen min-h-screen bg-gray-50">
 
       <Header />
 
 
-      <div className="flex-1 ">
+      {/* <div className="flex-1 w-screen ">
         {/* <SearchComponent /> */}
         {/* <Craving_food />
-        <New_item /> */}
+        <New_item /> */} 
 
         <BeksPizza />
         <FoodCategories />
 
-      </div>
+      {/* </div> */}
 
       {showLoginPopup && (
         <LoginPopup

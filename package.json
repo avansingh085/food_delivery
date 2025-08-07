@@ -19,6 +19,7 @@
     "framer-motion": "^12.4.10",
     "fuse.js": "^7.0.0",
     "leaflet": "^1.9.4",
+    "lucide-react": "^0.537.0",
     "polyline": "^0.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
